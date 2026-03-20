@@ -1,0 +1,17 @@
+[package]
+name = "upsi6"
+version = "0.1.0"
+edition = "2024"
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+
+[dependencies]
+marmalade = { path = "marmalade" }
+console_error_panic_hook = "0.1.7"
+glam = "0.32.1"
+wasm-bindgen-futures = "0.4.64"
