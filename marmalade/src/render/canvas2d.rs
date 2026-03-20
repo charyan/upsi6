@@ -525,13 +525,17 @@ impl Canvas2d {
         self.view_matrix = view_matrix;
     }
 
+    pub fn get_view_matrix(&mut self) -> Mat3 {
+        self.view_matrix
+    }
+
     /// Set the view matrix so that world coordinates corresponds to pixels on the canvas
     pub fn pixel_perfect_view(&mut self) {
-        self.view_matrix = Mat3::from_cols(
+        self.set_view_matrix(Mat3::from_cols(
             Vec3::new(2. / self.canvas.width() as f32, 0., 0.),
             Vec3::new(0., 2. / self.canvas.height() as f32, 0.),
             Vec3::new(-1., -1., 1.),
-        );
+        ));
     }
 
     /// Set the view matrix to a camera centered at `cam_pos` which can see at a distance `view_radius` on the left and right.
@@ -539,7 +543,7 @@ impl Canvas2d {
     pub fn camera_view(&mut self, cam_pos: Vec2, view_radius: f32) {
         let height_factor = self.canvas.width() as f32 / self.canvas.height() as f32;
 
-        self.view_matrix = Mat3::from_cols(
+        self.set_view_matrix(Mat3::from_cols(
             Vec3::new(1. / view_radius, 0., 0.),
             Vec3::new(0., height_factor / view_radius, 0.),
             Vec3::new(
@@ -547,7 +551,25 @@ impl Canvas2d {
                 -height_factor * cam_pos.y / view_radius,
                 1.,
             ),
-        );
+        ));
+    }
+
+    pub fn camera_view_ratio(&mut self, cam_pos: Vec2, mut view_radius: f32, target_ratio: f32) {
+        let height_factor = self.canvas.width() as f32 / self.canvas.height() as f32;
+
+        if height_factor > target_ratio {
+            view_radius *= height_factor / target_ratio
+        }
+
+        self.set_view_matrix(Mat3::from_cols(
+            Vec3::new(1. / view_radius, 0., 0.),
+            Vec3::new(0., height_factor / view_radius, 0.),
+            Vec3::new(
+                -cam_pos.x / view_radius,
+                -height_factor * cam_pos.y / view_radius,
+                1.,
+            ),
+        ));
     }
 
     /// Computes the world coordinates corresponding to the given screen coordinates with the current view matrix

@@ -5,13 +5,18 @@ use marmalade::font;
 use marmalade::image;
 use marmalade::input;
 use marmalade::input::Key;
+use marmalade::loading;
 use marmalade::render::canvas2d::Canvas2d;
 use marmalade::render::canvas2d::DrawTarget2d;
 use marmalade::render::color;
 
+use crate::resources::Resources;
+
+mod resources;
+
 async fn async_main() {
     // Set the window title
-    dom_stack::set_title("Hello World");
+    dom_stack::set_title("UPSI 6");
 
     // Create an HtmlCanvas where the game will be displayed
     let main_canvas = dom_stack::create_full_screen_canvas();
@@ -20,6 +25,10 @@ async fn async_main() {
 
     // Create a context for drawing the "game"
     let mut canvas = Canvas2d::new(&main_canvas);
+
+    loading::loading(&mut canvas, |_| async {}).await;
+
+    let resources = Resources::load(&mut canvas).await;
 
     // Load an image
     let image = image::from_bytes(include_bytes!("../marmalade/resources/images/logo.png")).await;

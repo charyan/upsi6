@@ -1,7 +1,7 @@
 [package]
 name = "marmalade"
 version = "0.0.1"
-edition = "2021"
+edition = "2024"
 description = "A small toolkit for video games on the web"
 license = "MPL-2.0"
 repository = "https://github.com/puzzle-rs/marmalade"
