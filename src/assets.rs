@@ -75,6 +75,9 @@ pub struct Assets {
     pub shreder_sound: Audio,
     pub shreder_break: Audio,
     pub pickup_sound: Audio,
+
+    pub hand_open: TextureRect,
+    pub hand_close: TextureRect,
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -202,6 +205,9 @@ impl Assets {
             pickup_sound: audio::from_bytes(include_bytes!(
                 "../ressources/audio/effects/grab/Pickup small metal 1.mp3"
             )).await,
+
+            hand_close: load_texture(canvas, include_bytes!("../assets/gui_hand_closed.png")).await,
+            hand_open: load_texture(canvas, include_bytes!("../assets/gui_hand_open.png")).await
         }
     }
 }

@@ -594,9 +594,18 @@ async fn async_main() {
 
             draw_game(&mut canvas, &mut world, &mut assets);
 
-            canvas.flush();
-
+            canvas.camera_view_ratio(Vec2::ZERO, 16., 16./9.);
+            
+            let mouse_texture = if input::is_button_down(Button::Left) {
+                &assets.hand_close
+            } else  {
+                &assets.hand_open
+            };
+            
+            canvas.draw_rect(canvas.screen_to_world_pos(input::mouse_position().as_vec2())-Vec2::new(0.5, 0.5), Vec2::new(1., 1.), color::WHITE, mouse_texture);
+            
             input::reset_pressed();
+            canvas.flush();
         }
     });
 }
