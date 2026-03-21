@@ -4,6 +4,7 @@ use glam::Mat3;
 use glam::Vec2;
 use glam::Vec4;
 use marmalade::audio;
+use marmalade::console;
 use marmalade::input::Key;
 
 use crate::assets::Assets;
@@ -64,6 +65,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
 
     if !input::is_button_down(Button::Left) {
         world.selected = None;
+        console::log(&format!("x = {}, y = {}", mouse_pos.x, mouse_pos.y));
     }
 
     let mouse_clicked = input::is_button_pressed(Button::Left);
@@ -75,6 +77,8 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
             * if r.movable && r.pos.distance(mouse_pos) < r.radius {
                 if mouse_clicked {
                     world.selected = Some(resource.clone());
+
+                    
                 }
 
                 let color_circle: Vec4 = if r.energy > 0 {
