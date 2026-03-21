@@ -317,7 +317,7 @@ impl World {
         let scraper = Scraper::new();
 
         World {
-            stage: 1,
+            stage: 0,
             selected: None,
             view_radius: VIEW_SIZE[0].x / 2.,
             cam_pos: Vec2::ZERO,
