@@ -51,6 +51,8 @@ pub struct Assets {
     pub s1: Audio,
     pub shredder_wheel: TextureRect,
     pub shredder_box: TextureRect,
+    pub gui_key_up: TextureRect,
+    pub gui_key_down: TextureRect,
 
     pub earth_resource: TextureRect,
 
@@ -123,6 +125,9 @@ impl Assets {
             shredder_wheel: load_texture(canvas, include_bytes!("../assets/shredder_wheel.png"))
                 .await,
             shredder_box: load_texture(canvas, include_bytes!("../assets/shredder_box.png")).await,
+            gui_key_down: load_texture(canvas, include_bytes!("../assets/gui_key_down.png")).await,
+            gui_key_up: load_texture(canvas, include_bytes!("../assets/gui_key_up.png")).await,
+
             earth_resource: load_texture(canvas, include_bytes!("../assets/L3_object.png")).await,
 
             music_act: [

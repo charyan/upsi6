@@ -3,14 +3,38 @@ use std::{cell::RefCell, rc::Rc};
 use glam::Vec2;
 use marmalade::{
     audio::{self, Audio, SoundHandle},
+    input, rand,
     render::canvas2d::TextureRect,
 };
 
-use crate::{VIEW_POS, VIEW_SIZE, assets::Assets};
+use crate::{TARGET_PRESS, VIEW_POS, VIEW_SIZE, assets::Assets};
 
 const MAX_STAT: i8 = 5;
 const MAX_TIME: i32 = 60;
 const MIN_TIME: i32 = 12;
+const TICK_PRESS: i32 = 12;
+
+pub const RANDOM_KEYS: &[(&'static str, input::Key)] = &[
+    ("A", input::Key::A),
+    ("X", input::Key::X),
+    ("Y", input::Key::Y),
+    ("Q", input::Key::Q),
+    ("P", input::Key::P),
+    ("T", input::Key::T),
+    ("L", input::Key::L),
+    ("O", input::Key::O),
+    ("H", input::Key::H),
+    ("M", input::Key::M),
+];
+
+fn random_key() -> (&'static str, input::Key) {
+    let index = rand::rand_range(0., RANDOM_KEYS.len() as f64) as usize;
+    if let Some(value) = RANDOM_KEYS.get(index) {
+        *value
+    } else {
+        panic!()
+    }
+}
 
 pub struct Resource {
     pub radius: f32,
@@ -52,21 +76,51 @@ pub struct Scraper {
     pub current_ressource_shredded: Option<Rc<RefCell<Resource>>>,
     pub current_shredding_tick: i32,
     pub target_shredding_tick: i32,
+    pub waiting_key: Option<(&'static str, input::Key)>,
+    pub current_press: i32,
+    pub tick_press: i32,
+    pub key_down: bool,
 }
 
 impl Scraper {
     pub fn new() -> Self {
         Scraper {
-            lubrication: MAX_STAT,
-            sharpening: MAX_STAT,
-            energy: MAX_STAT,
+            lubrication: 1,
+            sharpening: 1,
+            energy: 1,
             current_ressource_shredded: None,
             current_shredding_tick: 0,
             target_shredding_tick: 0,
+            waiting_key: None,
+            current_press: 0,
+            tick_press: 0,
+            key_down: false,
         }
     }
 
     pub fn tick(&mut self) {
+        if let Some(key) = self.waiting_key {
+            if self.tick_press > TICK_PRESS {
+                self.tick_press = 0;
+                self.key_down = !self.key_down;
+
+                if self.current_press > 0 {
+                    self.current_press -= 1;
+                }
+            } else {
+                self.tick_press += 1;
+            }
+
+            if input::is_key_pressed(key.1) {
+                self.current_press += 1;
+            }
+
+            if self.current_press > TARGET_PRESS {
+                self.waiting_key = None;
+                self.current_press = 0;
+            }
+        }
+
         if let Some(resource) = &mut self.current_ressource_shredded {
             if self.current_shredding_tick > self.target_shredding_tick {
                 self.lubrication += resource.borrow().lubrication;
@@ -74,15 +128,18 @@ impl Scraper {
                 self.sharpening += resource.borrow().sharpening;
 
                 if self.lubrication < 0 {
-                    self.lubrication = 0
+                    self.lubrication = 0;
+                    self.waiting_key = Some(random_key());
                 }
 
                 if self.energy < 0 {
-                    self.energy = 0
+                    self.energy = 0;
+                    self.waiting_key = Some(random_key());
                 }
 
                 if self.sharpening < 0 {
-                    self.sharpening = 0
+                    self.sharpening = 0;
+                    self.waiting_key = Some(random_key());
                 }
 
                 resource.borrow_mut().alive = false;

@@ -29,6 +29,8 @@ pub const SHREDDER_POS: Vec2 = Vec2::new(-15., -9.);
 pub const SHREDDER_SIZE: Vec2 = Vec2::new(4., 4.);
 pub const WHEEL_SIZE: Vec2 = Vec2::new(3., 3.);
 
+const TARGET_PRESS: i32 = 10;
+
 pub const VIEW_POS: [Vec2; 4] = [
     Vec2::new(-16., -9.),
     Vec2::new(-150., -85.),
@@ -43,7 +45,7 @@ pub const VIEW_SIZE: [Vec2; 4] = [
     Vec2::new(32000., 18000.),
 ];
 
-fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
+fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
     canvas.camera_view_ratio(world.cam_pos, world.view_radius, ASPECT_RATIO);
 
     let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
@@ -77,8 +79,6 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
             * if r.movable && r.pos.distance(mouse_pos) < r.radius {
                 if mouse_clicked {
                     world.selected = Some(resource.clone());
-
-                    
                 }
 
                 let color_circle: Vec4 = if r.energy > 0 {
@@ -121,7 +121,9 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
 
             let interface_pos = canvas.screen_to_world_pos(screen_pos);
 
-            if world.scraper.current_ressource_shredded.is_none() {
+            if world.scraper.current_ressource_shredded.is_none()
+                && world.scraper.waiting_key.is_none()
+            {
                 if interface_pos.distance(Vec2::new(
                     SHREDDER_POS.x + SHREDDER_SIZE.x / 2.,
                     SHREDDER_POS.y + SHREDDER_SIZE.y,
@@ -191,6 +193,42 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
         -((world.scraper.current_shredding_tick % 5) as f32) * 72.,
         assets,
     );
+
+    if let Some(key) = world.scraper.waiting_key {
+        let pos = Vec2::new(SHREDDER_POS.x - 0.5, SHREDDER_POS.y + SHREDDER_SIZE.y + 1.0);
+        let text = if world.scraper.key_down {
+            &assets.gui_key_down
+        } else {
+            &assets.gui_key_up
+        };
+
+        canvas.draw_rect(pos, Vec2::new(4., 4.), color::WHITE, &text);
+
+        canvas.draw_text(
+            pos + 1.75,
+            1.,
+            key.0,
+            &mut assets.font,
+            color::rgb(0., 0., 0.),
+            &canvas.white_texture(),
+        );
+
+        canvas.draw_rect(
+            Vec2::new(pos.x + 3.5, pos.y),
+            Vec2::new(1., 4.),
+            color::rgb(0., 0., 0.),
+            &canvas.white_texture(),
+        );
+        canvas.draw_rect(
+            Vec2::new(pos.x + 3.5, pos.y),
+            Vec2::new(
+                1.,
+                world.scraper.current_press as f32 / TARGET_PRESS as f32 * 4.,
+            ),
+            color::rgb(0., 1., 0.),
+            &canvas.white_texture(),
+        );
+    }
 }
 
 fn draw_wheel(canvas: &mut Canvas2d, wheel_pos: Vec2, angle: f32, assets: &Assets) {
@@ -218,7 +256,7 @@ async fn async_main() {
 
     loading::loading(&mut canvas, |_| async {}).await;
 
-    let assets = Assets::load(&mut canvas).await;
+    let mut assets = Assets::load(&mut canvas).await;
 
     let mut world = World::new(&assets);
 
@@ -235,7 +273,7 @@ async fn async_main() {
 
             canvas.clear(color::rgb(0., 0., 0.));
 
-            draw_game(&mut canvas, &mut world, &assets);
+            draw_game(&mut canvas, &mut world, &mut assets);
 
             canvas.flush();
 
