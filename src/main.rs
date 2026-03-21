@@ -5,45 +5,51 @@ use marmalade::font;
 use marmalade::image;
 use marmalade::input;
 use marmalade::input::Button;
-use marmalade::input::Key;
 use marmalade::loading;
 use marmalade::render::canvas2d::Canvas2d;
 use marmalade::render::canvas2d::DrawTarget2d;
 use marmalade::render::color;
 
-use crate::resources::Assets;
+use crate::assets::Assets;
 use crate::world::World;
 
-mod resources;
+mod assets;
 mod world;
 
 pub const ASPECT_RATIO: f32 = 16.0 / 9.0;
 pub const WORLD_SIZE: Vec2 = Vec2::new(16., 9.);
 
-fn draw_game(canvas: &mut Canvas2d, world: &mut World) {
+fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), world.view_radius, ASPECT_RATIO);
 
     let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
 
     canvas.draw_rect(
-        Vec2::new(-1000., -1000.),
-        Vec2::new(2000., 2000.),
-        color::rgb(0.0, 0.0, 1.0),
-        &canvas.white_texture(),
+        Vec2::new(-16000., -9000.),
+        Vec2::new(32000., 18000.),
+        color::WHITE,
+        &assets.l4,
     );
 
     canvas.draw_rect(
-        Vec2::new(-100., -100.),
-        Vec2::new(200., 200.),
-        color::rgb(0.0, 1.0, 0.0),
-        &canvas.white_texture(),
+        Vec2::new(-1600., -900.),
+        Vec2::new(3200., 1800.),
+        color::WHITE,
+        &assets.l3,
     );
 
     canvas.draw_rect(
-        Vec2::new(-10., -10.),
-        Vec2::new(20., 20.),
-        color::rgb(1.0, 0.0, 0.0),
-        &canvas.white_texture(),
+        Vec2::new(-160., -90.),
+        Vec2::new(320., 180.),
+        color::WHITE,
+        &assets.l2,
+    );
+
+    canvas.draw_rect(
+        Vec2::new(-16., -9.),
+        Vec2::new(32., 18.),
+        color::WHITE,
+        &assets.l1,
     );
 
     if !input::is_button_down(Button::Left) {
@@ -65,7 +71,13 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World) {
                 1.0
             };
 
-        canvas.draw_regular(r.pos, radius, 64, color::WHITE, &canvas.white_texture());
+        canvas.draw_regular(
+            r.pos,
+            radius,
+            64,
+            color::rgb(1.0, 0.0, 0.0),
+            &canvas.white_texture(),
+        );
     }
 
     if let Some(selected) = &world.selected {
@@ -105,7 +117,7 @@ async fn async_main() {
 
         canvas.clear(color::rgb(0., 0., 0.));
 
-        draw_game(&mut canvas, &mut world);
+        draw_game(&mut canvas, &mut world, &assets);
 
         canvas.flush();
     });
