@@ -125,11 +125,24 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
     };
 
     let l1_data = [
-        (1., Vec2::new(1., 1.), -1, -1,  2, assets.l1_can.clone()),
-        (1., Vec2::new(2., 2.), -1,  2, -1, assets.l1_chair.clone()),
-        (1., Vec2::new(3., 3.), -1, -1,  2, assets.l1_computer.clone()),
-        (1., Vec2::new(4., 4.), -1, -1, -1, assets.l1_desk.clone()),
-        (1., Vec2::new(5., 5.),  2, -1, -1, assets.l1_trash.clone()),
+        (6., Vec2::new(2.3, -2.), -1,  2, -1, assets.l1_chair.clone()),
+        (9., Vec2::new(-3.5, 1.5), -1, -1, -1, assets.l1_desk.clone()),
+        (1., Vec2::new(-0.23, 3.9), -1, -1,  2, assets.l1_can.clone()),
+        (1., Vec2::new(-0., 3.), -1, -1,  2, assets.l1_can.clone()),
+        (2., Vec2::new(-3.3, 2.7), -1, -1,  2, assets.l1_computer.clone()),
+        (3., Vec2::new(-4.3, -6.4),  2, -1, -1, assets.l1_trash.clone()),
+
+        (6., Vec2::new(9.7, 6.), -1,  2, -1, assets.l1_chair.clone()),
+        (9., Vec2::new(5.7, 8.5), -1, -1, -1, assets.l1_desk.clone()),
+        (1., Vec2::new(5., 7.5), -1, -1,  2, assets.l1_can.clone()),
+        (1., Vec2::new(4.5, 7.9), -1, -1,  2, assets.l1_can.clone()),
+        (3., Vec2::new(5.8, 1.24),  2, -1, -1, assets.l1_trash.clone()),
+
+
+        (1., Vec2::new(-12., 5.6), -1, -1,  2, assets.l1_can.clone()),
+        (1., Vec2::new(-14., 0.66), -1, -1,  2, assets.l1_can.clone()),
+
+        (2., Vec2::new(12., -4.6), -1, -1,  2, assets.l1_computer.clone()),
     ];
 
     let l2_data = [
