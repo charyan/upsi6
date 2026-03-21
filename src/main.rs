@@ -2,6 +2,7 @@ use std::time::Duration;
 
 use glam::Mat3;
 use glam::Vec2;
+use glam::Vec4;
 use marmalade::audio;
 use marmalade::input::Key;
 
@@ -75,11 +76,22 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
                 if mouse_clicked {
                     world.selected = Some(resource.clone());
                 }
+
+                let color_circle: Vec4 = if r.energy > 0 {
+                    color::rgba(1., 1., 0., 0.5)
+                } else if r.lubrication > 0 {
+                    color::rgba(0., 0., 1., 0.4)
+                } else if r.sharpening > 0 {
+                    color::rgba(1., 0., 0., 0.4)
+                } else {
+                    color::rgba(1., 1., 1., 0.)
+                };
+
                 canvas.draw_regular(
                     r.pos,
                     r.radius / 2.,
                     64,
-                    color::rgba(1.0, 0., 0., 0.2),
+                    color_circle,
                     &canvas.white_texture(),
                 );
                 1.1

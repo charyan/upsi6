@@ -124,7 +124,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
         Vec2::new(1., 1.),
         -1,
         -1,
-        -1,
+        2,
         assets.l1_can.clone(),
     ))));
 
@@ -132,7 +132,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
         1.,
         Vec2::new(2., 2.),
         -1,
-        -1,
+        2,
         -1,
         assets.l1_chair.clone(),
     ))));
@@ -142,7 +142,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
         Vec2::new(3., 3.),
         -1,
         -1,
-        -1,
+        2,
         assets.l1_computer.clone(),
     ))));
 
@@ -158,7 +158,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
     res_l1.push(Rc::new(RefCell::new(Resource::new(
         1.,
         Vec2::new(5., 5.),
-        -1,
+        2,
         -1,
         -1,
         assets.l1_trash.clone(),
@@ -185,7 +185,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
 
     res_l2.push(Rc::new(RefCell::new(Resource::new(
         10.,
-        Vec2::new(50., 50.),
+        Vec2::new(0., 0.),
         -1,
         -1,
         -1,
@@ -194,7 +194,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
 
     res_l2.push(Rc::new(RefCell::new(Resource::new(
         10.,
-        Vec2::new(55., 10.),
+        Vec2::new(-10., -10.),
         -1,
         -1,
         -1,
@@ -203,7 +203,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
 
     res_l2.push(Rc::new(RefCell::new(Resource::new(
         10.,
-        Vec2::new(-10., 25.),
+        Vec2::new(-20., -25.),
         -1,
         -1,
         -1,
@@ -212,7 +212,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
 
     res_l2.push(Rc::new(RefCell::new(Resource::new(
         10.,
-        Vec2::new(90., 20.),
+        Vec2::new(-90., -20.),
         -1,
         -1,
         -1,
@@ -221,7 +221,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
 
     res_l2.push(Rc::new(RefCell::new(Resource::new(
         10.,
-        Vec2::new(100., -25.),
+        Vec2::new(-10., -25.),
         -1,
         -1,
         -1,
