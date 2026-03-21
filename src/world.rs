@@ -195,19 +195,23 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
 
     let l1_data = [
         (6., Vec2::new(2.3, -2.), -1, 2, -1, assets.l1_chair.clone()),
-        (9., Vec2::new(-3.5, 1.5), -1, -1, -1, assets.l1_desk.clone()),
+        (6., Vec2::new(9.7, 6.), -1, 2, -1, assets.l1_chair.clone()),
+
+        (3., Vec2::new(-4.3, -6.4), 0, 2, -1, assets.l1_trash.clone()),
+        (3., Vec2::new(5.8, 1.24), 0, 2, -1, assets.l1_trash.clone()),
+
+        (9., Vec2::new(-3.5, 1.5), 2, -1, -1, assets.l1_desk.clone()),
+        (9., Vec2::new(5.7, 8.5), 2, -1, -1, assets.l1_desk.clone()),
+
+        (2., Vec2::new(-3.3, 2.7), 2, -1,-1, assets.l1_computer.clone()),
+        (2., Vec2::new(12., -4.6), 2, -1, -1, assets.l1_computer.clone()),
+
         (1., Vec2::new(-0.23, 3.9), -1, -1, 2, assets.l1_can.clone()),
         (1., Vec2::new(-0., 3.), -1, -1, 2, assets.l1_can.clone()),
-        (2., Vec2::new(-3.3, 2.7), -1, -1, 2, assets.l1_computer.clone()),
-        (3., Vec2::new(-4.3, -6.4), 2, -1, -1, assets.l1_trash.clone()),
-        (6., Vec2::new(9.7, 6.), -1, 2, -1, assets.l1_chair.clone()),
-        (9., Vec2::new(5.7, 8.5), -1, -1, -1, assets.l1_desk.clone()),
         (1., Vec2::new(5., 7.5), -1, -1, 2, assets.l1_can.clone()),
         (1., Vec2::new(4.5, 7.9), -1, -1, 2, assets.l1_can.clone()),
-        (3., Vec2::new(5.8, 1.24), 2, -1, -1, assets.l1_trash.clone()),
         (1., Vec2::new(-12., 5.6), -1, -1, 2, assets.l1_can.clone()),
         (1., Vec2::new(-14., 0.66), -1, -1, 2, assets.l1_can.clone()),
-        (2., Vec2::new(12., -4.6), -1, -1, 2, assets.l1_computer.clone()),
     ];
 
     let l2_data = [
@@ -313,13 +317,13 @@ impl World {
         let scraper = Scraper::new();
 
         World {
-            stage: 2,
+            stage: 1,
             selected: None,
             view_radius: VIEW_SIZE[0].x / 2.,
             cam_pos: Vec2::ZERO,
             resources,
             scraper,
-            email: false,
+            email: true,
             music_handle: None,
             timer: 0,
         }
