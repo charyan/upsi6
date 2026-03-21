@@ -51,8 +51,18 @@ pub struct Assets {
     pub s1: Audio,
     pub shredder_wheel: TextureRect,
     pub shredder_box: TextureRect,
+    pub shredder_panel_ok: TextureRect,
+    pub shredder_panel_nok_1: TextureRect,
+    pub shredder_panel_nok_2: TextureRect,
+
     pub gui_key_up: TextureRect,
     pub gui_key_down: TextureRect,
+    pub gui_gauge: TextureRect,
+    pub gui_window: TextureRect,
+
+    pub energy: TextureRect,
+    pub gears: TextureRect,
+    pub oil: TextureRect,
 
     pub earth_resource: TextureRect,
 
@@ -125,8 +135,30 @@ impl Assets {
             shredder_wheel: load_texture(canvas, include_bytes!("../assets/shredder_wheel.png"))
                 .await,
             shredder_box: load_texture(canvas, include_bytes!("../assets/shredder_box.png")).await,
+            shredder_panel_ok: load_texture(
+                canvas,
+                include_bytes!("../assets/shredder_panel_ok.png"),
+            )
+            .await,
+            shredder_panel_nok_1: load_texture(
+                canvas,
+                include_bytes!("../assets/shredder_panel_nok_1.png"),
+            )
+            .await,
+            shredder_panel_nok_2: load_texture(
+                canvas,
+                include_bytes!("../assets/shredder_panel_nok_2.png"),
+            )
+            .await,
+
             gui_key_down: load_texture(canvas, include_bytes!("../assets/gui_key_down.png")).await,
             gui_key_up: load_texture(canvas, include_bytes!("../assets/gui_key_up.png")).await,
+            gui_gauge: load_texture(canvas, include_bytes!("../assets/gui_gauge.png")).await,
+            gui_window: load_texture(canvas, include_bytes!("../assets/gui_window.png")).await,
+
+            energy: load_texture(canvas, include_bytes!("../assets/energy.png")).await,
+            gears: load_texture(canvas, include_bytes!("../assets/gears.png")).await,
+            oil: load_texture(canvas, include_bytes!("../assets/oil.png")).await,
 
             earth_resource: load_texture(canvas, include_bytes!("../assets/L3_object.png")).await,
 

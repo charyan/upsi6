@@ -6,6 +6,7 @@ use glam::Vec4;
 use marmalade::audio;
 use marmalade::console;
 use marmalade::input::Key;
+use marmalade::render::canvas2d::TextureRect;
 
 use crate::assets::Assets;
 use crate::world::World;
@@ -30,6 +31,7 @@ pub const SHREDDER_SIZE: Vec2 = Vec2::new(4., 4.);
 pub const WHEEL_SIZE: Vec2 = Vec2::new(3., 3.);
 
 const TARGET_PRESS: i32 = 10;
+const VALUE_MIN: i8 = 2;
 
 pub const VIEW_POS: [Vec2; 4] = [
     Vec2::new(-16., -9.),
@@ -153,26 +155,62 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
 
     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
-    canvas.draw_rect(
-        SHREDDER_POS,
-        SHREDDER_SIZE,
-        color::WHITE,
-        &assets.shredder_box,
-    );
+    let mut panel_text: &TextureRect = &assets.shredder_panel_ok;
+
+    if let Some(key) = world.scraper.waiting_key {
+        let pos = Vec2::new(SHREDDER_POS.x - 0.5, SHREDDER_POS.y + SHREDDER_SIZE.y + 3.0);
+        let text = if world.scraper.key_down {
+            panel_text = &assets.shredder_panel_nok_1;
+            &assets.gui_key_down
+        } else {
+            panel_text = &assets.shredder_panel_nok_2;
+            &assets.gui_key_up
+        };
+
+        canvas.draw_rect(pos, Vec2::new(4., 4.), color::WHITE, &text);
+
+        canvas.draw_text(
+            pos + 1.75,
+            1.,
+            key.0,
+            &mut assets.font,
+            color::rgb(0., 0., 0.),
+            &canvas.white_texture(),
+        );
+
+        canvas.draw_rect(
+            Vec2::new(pos.x + 3.75, pos.y),
+            Vec2::new(
+                0.5,
+                world.scraper.current_press as f32 / TARGET_PRESS as f32 * 4.,
+            ),
+            color::rgb(0., 1., 0.),
+            &canvas.white_texture(),
+        );
+
+        canvas.draw_rect(
+            Vec2::new(pos.x + 3.5, pos.y),
+            Vec2::new(1., 4.),
+            color::rgb(0., 0., 0.),
+            &assets.gui_gauge,
+        );
+    }
+
+    canvas.draw_rect(SHREDDER_POS, SHREDDER_SIZE, color::WHITE, &panel_text);
 
     let wheel_pos_1 = Vec2::new(
         SHREDDER_POS.x - WHEEL_SIZE.x / 2. + 0.5,
-        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 0.5,
+        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 2.,
     );
 
     let wheel_pos_2 = Vec2::new(
         SHREDDER_POS.x + WHEEL_SIZE.x / 2. + 0.5,
-        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 0.5,
+        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 2.,
     );
 
     let wheel_pos_3 = Vec2::new(
         SHREDDER_POS.x + SHREDDER_SIZE.x / 2. - WHEEL_SIZE.x / 2.,
-        SHREDDER_POS.y + SHREDDER_SIZE.y / 2. - WHEEL_SIZE.y / 2.,
+        SHREDDER_POS.y + SHREDDER_SIZE.y / 2. - WHEEL_SIZE.y / 2. + 1.5,
     );
 
     draw_wheel(
@@ -194,39 +232,30 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
         assets,
     );
 
-    if let Some(key) = world.scraper.waiting_key {
-        let pos = Vec2::new(SHREDDER_POS.x - 0.5, SHREDDER_POS.y + SHREDDER_SIZE.y + 1.0);
-        let text = if world.scraper.key_down {
-            &assets.gui_key_down
-        } else {
-            &assets.gui_key_up
-        };
-
-        canvas.draw_rect(pos, Vec2::new(4., 4.), color::WHITE, &text);
-
-        canvas.draw_text(
-            pos + 1.75,
-            1.,
-            key.0,
-            &mut assets.font,
-            color::rgb(0., 0., 0.),
-            &canvas.white_texture(),
-        );
-
+    if world.scraper.lubrication <= VALUE_MIN {
         canvas.draw_rect(
-            Vec2::new(pos.x + 3.5, pos.y),
-            Vec2::new(1., 4.),
-            color::rgb(0., 0., 0.),
-            &canvas.white_texture(),
+            Vec2::new(SHREDDER_POS.x + 0.5, SHREDDER_POS.y + 0.25),
+            Vec2::new(1., 1.),
+            color::WHITE,
+            &assets.oil,
         );
+    }
+
+    if world.scraper.energy <= VALUE_MIN {
         canvas.draw_rect(
-            Vec2::new(pos.x + 3.5, pos.y),
-            Vec2::new(
-                1.,
-                world.scraper.current_press as f32 / TARGET_PRESS as f32 * 4.,
-            ),
-            color::rgb(0., 1., 0.),
-            &canvas.white_texture(),
+            Vec2::new(SHREDDER_POS.x + 1.5, SHREDDER_POS.y + 0.25),
+            Vec2::new(1., 1.),
+            color::WHITE,
+            &assets.energy,
+        );
+    }
+
+    if world.scraper.sharpening <= VALUE_MIN {
+        canvas.draw_rect(
+            Vec2::new(SHREDDER_POS.x + 2.5, SHREDDER_POS.y + 0.25),
+            Vec2::new(1., 1.),
+            color::WHITE,
+            &assets.gears,
         );
     }
 }

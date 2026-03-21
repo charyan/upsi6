@@ -17,7 +17,7 @@ const TICK_PRESS: i32 = 12;
 pub const RANDOM_KEYS: &[(&'static str, input::Key)] = &[
     ("A", input::Key::A),
     ("X", input::Key::X),
-    ("Y", input::Key::Y),
+    ("K", input::Key::K),
     ("Q", input::Key::Q),
     ("P", input::Key::P),
     ("T", input::Key::T),
