@@ -79,9 +79,9 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
         world.selected = None;
     }
 
-    // if input::is_button_pressed(Button::Left) {
-    //     console::log(&format!("x = {}, y = {}", mouse_pos.x, mouse_pos.y));
-    // }
+/*     if input::is_button_pressed(Button::Left) {
+        console::log(&format!("x = {}, y = {}", mouse_pos.x, mouse_pos.y));
+    } */
 
     let mouse_clicked = input::is_button_pressed(Button::Left);
 

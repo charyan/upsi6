@@ -250,62 +250,17 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
     ];
 
     let l4_data = [
-        (
-            1000.,
-            Vec2::new(100., -25.),
-            -1,
-            -1,
-            -1,
-            assets.l4_star.clone(),
-        ),
-        (
-            1000.,
-            Vec2::new(100., -25.),
-            -1,
-            -1,
-            -1,
-            assets.l4_sat.clone(),
-        ),
-        (
-            1000.,
-            Vec2::new(100., -25.),
-            -1,
-            -1,
-            -1,
-            assets.l4_helmet.clone(),
-        ),
-        (
-            1000.,
-            Vec2::new(100., -25.),
-            -1,
-            -1,
-            -1,
-            assets.l4_moon.clone(),
-        ),
-        (
-            1000.,
-            Vec2::new(100., -25.),
-            -1,
-            -1,
-            -1,
-            assets.l4_milkyway.clone(),
-        ),
-        (
-            1000.,
-            Vec2::new(100., -25.),
-            -1,
-            -1,
-            -1,
-            assets.l4_helmet.clone(),
-        ),
-        (
-            1000.,
-            Vec2::new(100., -25.),
-            -1,
-            -1,
-            -1,
-            assets.l4_comet.clone(),
-        ),
+        (10000., Vec2::new(18483.207, 759.7441), -1, -1, -1, assets.l4_sun.clone()),
+        (1000., Vec2::new(-5955.55, -264.4925), -1, -1, -1, assets.l4_moon.clone()),
+        (1500., Vec2::new(-3383.0498, 7595.926), -1, -1, -1, assets.l4_comet.clone()),
+        (1000., Vec2::new(2190.7021, 7691.2036), -1, -1, -1, assets.l4_star.clone()),
+        (1000., Vec2::new(-381.79883, 8620.162), -1, -1, -1, assets.l4_star.clone()),
+        (600., Vec2::new(1523.7578, -407.4095), -1, -1, -1, assets.l4_sat.clone()),
+        (1200., Vec2::new(13624.037, 6690.7866), -1, -1, -1, assets.l4_milkyway.clone()),
+        (1600., Vec2::new(6811.676, -4456.7153), -1, -1, -1, assets.l4_milkyway.clone()),
+        (4000., Vec2::new(7145.1475, 2260.3691), -1, -1, -1, assets.l4_helmet.clone()),
+        (4200., Vec2::new(-810.5488, -312.1314), -1, -1, -1, assets.l3_object.clone()),
+        
     ];
 
     let res_l0 = l0_data
@@ -361,7 +316,7 @@ impl World {
             cam_pos: Vec2::ZERO,
             resources,
             scraper,
-            email: true,
+            email: false,
             music_handle: None,
             timer: 0,
         }
