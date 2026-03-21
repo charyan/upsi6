@@ -1,11 +1,9 @@
 use std::time::Duration;
 
+use glam::Mat3;
 use glam::Vec2;
-<<<<<<< HEAD
 use marmalade::audio;
-=======
 use marmalade::console;
->>>>>>> 18d8520 (add scraper)
 use marmalade::dom_stack;
 use marmalade::draw_scheduler;
 use marmalade::input;
@@ -24,6 +22,10 @@ mod world;
 
 pub const ASPECT_RATIO: f32 = 16.0 / 9.0;
 pub const WORLD_SIZE: Vec2 = Vec2::new(16., 9.);
+
+pub const SHREDDER_POS: Vec2 = Vec2::new(-15., -9.);
+pub const SHREDDER_SIZE: Vec2 = Vec2::new(4., 4.);
+pub const WHEEL_SIZE: Vec2 = Vec2::new(3., 3.);
 
 fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), world.view_radius, ASPECT_RATIO);
@@ -100,10 +102,22 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
 
             let interface_pos = canvas.screen_to_world_pos(screen_pos);
 
-            drop(s);
-
             if world.scraper.current_ressource_shredded.is_none() {
-                if interface_pos.distance(Vec2::new(-16., -9.)) < 1. {
+                if interface_pos.distance(Vec2::new(
+                    SHREDDER_POS.x + SHREDDER_SIZE.x / 2.,
+                    SHREDDER_POS.y + SHREDDER_SIZE.y,
+                )) < 1.
+                {
+                    let screen_pos = canvas.world_to_screen_pos(
+                        SHREDDER_POS + Vec2::new(SHREDDER_SIZE.x / 2., SHREDDER_SIZE.y),
+                    );
+
+                    canvas.camera_view_ratio(Vec2::new(0.0, 0.0), world.view_radius, ASPECT_RATIO);
+
+                    let world_pos = canvas.screen_to_world_pos(screen_pos);
+
+                    s.pos = world_pos;
+                    drop(s);
                     world.scraper.shred(selected.clone());
                 }
             }
@@ -117,11 +131,59 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
     canvas.draw_rect(
-        Vec2::new(-16., -9.),
-        Vec2::new(1., 1.),
-        color::rgb(0., 0., 0.),
-        &assets.l1,
+        SHREDDER_POS,
+        SHREDDER_SIZE,
+        color::WHITE,
+        &assets.shredder_box,
     );
+
+    let wheel_pos_1 = Vec2::new(
+        SHREDDER_POS.x - WHEEL_SIZE.x / 2. + 0.5,
+        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 0.5,
+    );
+
+    let wheel_pos_2 = Vec2::new(
+        SHREDDER_POS.x + WHEEL_SIZE.x / 2. + 0.5,
+        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 0.5,
+    );
+
+    let wheel_pos_3 = Vec2::new(
+        SHREDDER_POS.x + SHREDDER_SIZE.x / 2. - WHEEL_SIZE.x / 2.,
+        SHREDDER_POS.y + SHREDDER_SIZE.y / 2. - WHEEL_SIZE.y / 2.,
+    );
+
+    draw_wheel(
+        canvas,
+        wheel_pos_1,
+        ((world.scraper.current_shredding_tick % 5) as f32) * 72.,
+        assets,
+    );
+    draw_wheel(
+        canvas,
+        wheel_pos_2,
+        -((world.scraper.current_shredding_tick % 5) as f32) * 72.,
+        assets,
+    );
+    draw_wheel(
+        canvas,
+        wheel_pos_3,
+        -((world.scraper.current_shredding_tick % 5) as f32) * 72.,
+        assets,
+    );
+}
+
+fn draw_wheel(canvas: &mut Canvas2d, wheel_pos: Vec2, angle: f32, assets: &Assets) {
+    let previous = canvas.get_view_matrix();
+
+    let m1 = Mat3::from_translation(wheel_pos + Vec2::new(WHEEL_SIZE.x, WHEEL_SIZE.y) / 2.);
+    let m2 = Mat3::from_rotation_z(angle.to_radians());
+    let m3 = Mat3::from_translation(-wheel_pos - Vec2::new(WHEEL_SIZE.x, WHEEL_SIZE.y) / 2.);
+
+    canvas.set_view_matrix(previous * m1 * m2 * m3);
+
+    canvas.draw_rect(wheel_pos, WHEEL_SIZE, color::WHITE, &assets.shredder_wheel);
+
+    canvas.set_view_matrix(previous);
 }
 
 async fn async_main() {

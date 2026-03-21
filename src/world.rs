@@ -74,7 +74,12 @@ impl Scraper {
                 resource.borrow_mut().alive = false;
                 self.current_ressource_shredded = None;
             } else {
-                self.current_shredding_tick += 1
+                self.current_shredding_tick += 1;
+
+                let ratio = 1. / self.target_shredding_tick as f32;
+                let radius = resource.borrow().radius;
+
+                resource.borrow_mut().pos.y -= radius * ratio;
             }
         }
     }
@@ -82,7 +87,6 @@ impl Scraper {
     pub fn get_speed(&self) -> i32 {
         let percentage: f32 =
             (self.energy + self.lubrication + self.sharpening) as f32 / (MAX_STAT as f32 * 3.0);
-        console::log(&format!("percentage : {percentage}"));
 
         let ticks = if percentage == 0. {
             MAX_TIME
@@ -90,7 +94,6 @@ impl Scraper {
             (MIN_TIME as f32 / percentage) as i32
         };
 
-        console::log(&format!("tick : {ticks}"));
         ticks
     }
 
@@ -99,7 +102,6 @@ impl Scraper {
         self.target_shredding_tick = self.get_speed();
         ressource.borrow_mut().movable = false;
         self.current_ressource_shredded = Some(ressource);
-        console::log("Shreded ! ");
     }
 }
 

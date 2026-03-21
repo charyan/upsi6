@@ -12,6 +12,8 @@ pub struct Assets {
     pub l4: TextureRect,
     pub font: Font,
     pub s1: Audio,
+    pub shredder_wheel: TextureRect,
+    pub shredder_box: TextureRect,
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -30,6 +32,9 @@ impl Assets {
                 "../ressources/audio/effects/shred/Destruction_heavy_metal_1.mp3"
             ))
             .await,
+            shredder_wheel: load_texture(canvas, include_bytes!("../assets/shredder_wheel.png"))
+                .await,
+            shredder_box: load_texture(canvas, include_bytes!("../assets/shredder_box.png")).await,
         }
     }
 }
