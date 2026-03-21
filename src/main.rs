@@ -86,9 +86,9 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 let color_circle: Vec4 = if r.energy > 0 {
                     color::rgba(1., 1., 0., 0.5)
                 } else if r.lubrication > 0 {
-                    color::rgba(0., 0., 1., 0.4)
-                } else if r.sharpening > 0 {
                     color::rgba(1., 0., 0., 0.4)
+                } else if r.sharpening > 0 {
+                    color::rgba(0., 0., 1., 0.4)
                 } else {
                     color::rgba(0., 0., 0., 0.1)
                 };
