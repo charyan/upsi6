@@ -1,4 +1,5 @@
 use glam::Vec2;
+use marmalade::audio;
 use marmalade::dom_stack;
 use marmalade::draw_scheduler;
 use marmalade::font;
@@ -101,6 +102,8 @@ async fn async_main() {
     loading::loading(&mut canvas, |_| async {}).await;
 
     let assets = Assets::load(&mut canvas).await;
+
+    audio::play(&assets.s1, 1.0);
 
     let image = image::from_bytes(include_bytes!("../marmalade/resources/images/logo.png")).await;
 
