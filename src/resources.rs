@@ -5,13 +5,13 @@ use marmalade::{
     render::canvas2d::{Canvas2d, TextureRect},
 };
 
-pub struct Resources {}
+pub struct Assets {}
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
     canvas.create_texture(&image::from_bytes(bytes).await)
 }
 
-impl Resources {
+impl Assets {
     pub async fn load(canvas: &mut Canvas2d) -> Self {
         Self {}
     }

@@ -4,90 +4,115 @@ use marmalade::draw_scheduler;
 use marmalade::font;
 use marmalade::image;
 use marmalade::input;
+use marmalade::input::Button;
 use marmalade::input::Key;
 use marmalade::loading;
 use marmalade::render::canvas2d::Canvas2d;
 use marmalade::render::canvas2d::DrawTarget2d;
 use marmalade::render::color;
 
-use crate::resources::Resources;
+use crate::resources::Assets;
+use crate::world::World;
 
 mod resources;
+mod world;
+
+pub const ASPECT_RATIO: f32 = 16.0 / 9.0;
+pub const WORLD_SIZE: Vec2 = Vec2::new(16., 9.);
+
+fn draw_game(canvas: &mut Canvas2d, world: &mut World) {
+    canvas.camera_view_ratio(Vec2::new(0.0, 0.0), world.view_radius, ASPECT_RATIO);
+
+    let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
+
+    canvas.draw_rect(
+        Vec2::new(-1000., -1000.),
+        Vec2::new(2000., 2000.),
+        color::rgb(0.0, 0.0, 1.0),
+        &canvas.white_texture(),
+    );
+
+    canvas.draw_rect(
+        Vec2::new(-100., -100.),
+        Vec2::new(200., 200.),
+        color::rgb(0.0, 1.0, 0.0),
+        &canvas.white_texture(),
+    );
+
+    canvas.draw_rect(
+        Vec2::new(-10., -10.),
+        Vec2::new(20., 20.),
+        color::rgb(1.0, 0.0, 0.0),
+        &canvas.white_texture(),
+    );
+
+    if !input::is_button_down(Button::Left) {
+        world.selected = None;
+    }
+
+    let mouse_clicked = input::is_button_pressed(Button::Left);
+
+    for resource in &world.resources {
+        let r = resource.borrow();
+
+        let radius = r.radius
+            * if r.pos.distance(mouse_pos) < r.radius {
+                if mouse_clicked {
+                    world.selected = Some(resource.clone());
+                }
+                1.1
+            } else {
+                1.0
+            };
+
+        canvas.draw_regular(r.pos, radius, 64, color::WHITE, &canvas.white_texture());
+    }
+
+    if let Some(selected) = &world.selected {
+        let mut s = selected.borrow_mut();
+
+        let dist = mouse_pos - s.pos;
+
+        s.pos += dist * 0.1;
+    }
+}
 
 async fn async_main() {
-    // Set the window title
     dom_stack::set_title("UPSI 6");
 
-    // Create an HtmlCanvas where the game will be displayed
     let main_canvas = dom_stack::create_full_screen_canvas();
-    // Add the Html canvas to the dom
+
     dom_stack::stack_node(&main_canvas);
 
-    // Create a context for drawing the "game"
     let mut canvas = Canvas2d::new(&main_canvas);
 
     loading::loading(&mut canvas, |_| async {}).await;
 
-    let resources = Resources::load(&mut canvas).await;
+    let assets = Assets::load(&mut canvas).await;
 
-    // Load an image
     let image = image::from_bytes(include_bytes!("../marmalade/resources/images/logo.png")).await;
 
-    // Upload the image to the GPU
     let image_rect = canvas.create_texture(&image);
 
-    // Load the default font
     let mut font = font::from_bytes(font::MONOGRAM);
 
-    // Player position
-    let mut position = Vec2::new(300., 300.);
+    let mut world = World::new();
 
-    // Closure called for every frame
     draw_scheduler::set_on_draw(move || {
-        // Move the sprite with keyboard
-        if input::is_key_down(Key::A) {
-            position.x -= 4.;
-        }
-        if input::is_key_down(Key::D) {
-            position.x += 4.;
-        }
-        if input::is_key_down(Key::S) {
-            position.y -= 4.;
-        }
-        if input::is_key_down(Key::W) {
-            position.y += 4.;
-        }
+        world.tick();
 
-        // Set size of the canvas to the same as screen
         canvas.fit_screen();
 
-        // Set the view matrix so that coordinates corresponds to pixels on the canvas
-        canvas.pixel_perfect_view();
-
-        // Clear canvas to black
         canvas.clear(color::rgb(0., 0., 0.));
 
-        // Create an hexagon with our texture and a red filter then draw it
-        canvas.draw_regular(position, 100., 6, color::rgb(1., 0.5, 0.5), &image_rect);
+        draw_game(&mut canvas, &mut world);
 
-        canvas.draw_text(
-            Vec2::new(100., 100.),
-            50.,
-            "Move with W A S D",
-            &mut font,
-            color::rgb(1., 1., 1.),
-            &canvas.white_texture(),
-        );
-
-        // Make sure everything is drawn
         canvas.flush();
     });
 }
 
 fn main() {
-    // Redirect rust panics to the console for easier debugging
     console_error_panic_hook::set_once();
 
-    // Start the async_main function, some marmalade functionalities require an async context
     wasm_bindgen_futures::spawn_local(async_main());
 }
