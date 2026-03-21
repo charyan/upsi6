@@ -73,6 +73,8 @@ pub struct Assets {
 
     pub music_act: [Audio; 4],
     pub shreder_sound: Audio,
+    pub shreder_break: Audio,
+    pub pickup_sound: Audio,
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -192,6 +194,14 @@ impl Assets {
                 "../ressources/audio/effects/active_shreder_sound.mp3"
             ))
             .await,
+
+            shreder_break: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/explosion.mp3"
+            )).await,
+            
+            pickup_sound: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/grab/Pickup small metal 1.mp3"
+            )).await,
         }
     }
 }

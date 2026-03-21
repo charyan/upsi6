@@ -116,6 +116,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 * if r.movable && r.pos.distance(mouse_pos) < (r.radius / 2.) {
                     if mouse_clicked {
                         world.selected = Some(resource.clone());
+                        audio::play(&mut assets.pickup_sound, 1.);
                     }
 
                     let color_circle: Vec4 = if r.energy > 0 {
@@ -352,7 +353,7 @@ async fn async_main() {
                 world.next_stage(&assets);
             }
 
-            world.tick();
+            world.tick(&mut assets);
 
             canvas.fit_screen();
 

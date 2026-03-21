@@ -98,7 +98,7 @@ impl Scraper {
         }
     }
 
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self, assets: &mut Assets) {
         if let Some(key) = self.waiting_key {
             if self.tick_press > TICK_PRESS {
                 self.tick_press = 0;
@@ -140,6 +140,10 @@ impl Scraper {
                 if self.sharpening < 0 {
                     self.sharpening = 0;
                     self.waiting_key = Some(random_key());
+                }
+
+                if self.waiting_key.is_some() {
+                    audio::play(&mut assets.shreder_break, 1.);
                 }
 
                 resource.borrow_mut().alive = false;
@@ -310,7 +314,7 @@ impl World {
         let scraper = Scraper::new();
 
         World {
-            stage: 4,
+            stage: 0,
             selected: None,
             view_radius: VIEW_SIZE[0].x / 2.,
             cam_pos: Vec2::ZERO,
@@ -374,12 +378,12 @@ impl World {
         if let Some(music_handle) = &self.music_handle {
             music_handle.stop();
         }
-        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage], 1.0));
+        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage], 0.5));
     }
 
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self, assets: &mut Assets) {
         self.handle_stage_pos();
-        self.scraper.tick();
+        self.scraper.tick(assets);
         self.timer += 1;
     }
 }
