@@ -195,8 +195,9 @@ impl Input {
                 Closure::wrap(Box::new(move |event: MouseEvent| {
                     event.prevent_default();
                     if let Some(button) = Button::from_code(event.button()) {
-                        buttons_down_clone.borrow_mut().insert(button);
-                        buttons_pressed_clone.borrow_mut().insert(button);
+                        if !(buttons_down_clone.borrow_mut().insert(button)) {
+                            buttons_pressed_clone.borrow_mut().insert(button);
+                        }
                     }
                 }) as Box<dyn Fn(MouseEvent)>)
                 .into_js_value()

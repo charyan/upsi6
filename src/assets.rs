@@ -12,6 +12,7 @@ pub struct Assets {
     pub l1_computer: TextureRect,
     pub l1_desk: TextureRect,
     pub l1_trash: TextureRect,
+    pub l1_paper: TextureRect,
 
     pub l2: TextureRect,
     pub l2_car: TextureRect,
@@ -71,6 +72,7 @@ impl Assets {
             l1_computer: load_texture(canvas, include_bytes!("../assets/L1_computer.png")).await,
             l1_desk: load_texture(canvas, include_bytes!("../assets/L1_desk.png")).await,
             l1_trash: load_texture(canvas, include_bytes!("../assets/L1_trash.png")).await,
+            l1_paper: load_texture(canvas, include_bytes!("../assets/L1_paper.png")).await,
 
             // l2
             l2: load_texture(canvas, include_bytes!("../assets/L2_base.png")).await,
