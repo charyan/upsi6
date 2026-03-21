@@ -63,6 +63,7 @@ pub struct Assets {
     pub energy: TextureRect,
     pub gears: TextureRect,
     pub oil: TextureRect,
+    pub gui_time: TextureRect,
 
     pub earth_resource: TextureRect,
 
@@ -159,6 +160,7 @@ impl Assets {
             energy: load_texture(canvas, include_bytes!("../assets/energy.png")).await,
             gears: load_texture(canvas, include_bytes!("../assets/gears.png")).await,
             oil: load_texture(canvas, include_bytes!("../assets/oil.png")).await,
+            gui_time: load_texture(canvas, include_bytes!("../assets/gui_time.png")).await,
 
             earth_resource: load_texture(canvas, include_bytes!("../assets/L3_object.png")).await,
 

@@ -434,6 +434,7 @@ pub struct World {
     pub scraper: Scraper,
     stage: usize,
     pub music_handle: Option<SoundHandle>,
+    pub timer: u64,
 }
 
 impl World {
@@ -450,6 +451,7 @@ impl World {
             resources,
             scraper,
             music_handle: None,
+            timer: 0,
         }
     }
 
@@ -505,5 +507,6 @@ impl World {
     pub fn tick(&mut self) {
         self.handle_stage_pos();
         self.scraper.tick();
+        self.timer += 1;
     }
 }
