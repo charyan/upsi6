@@ -50,6 +50,8 @@ pub struct Assets {
     pub s1: Audio,
     pub shredder_wheel: TextureRect,
     pub shredder_box: TextureRect,
+
+    pub earth_resource: TextureRect,
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -116,6 +118,7 @@ impl Assets {
             shredder_wheel: load_texture(canvas, include_bytes!("../assets/shredder_wheel.png"))
                 .await,
             shredder_box: load_texture(canvas, include_bytes!("../assets/shredder_box.png")).await,
+            earth_resource: load_texture(canvas, include_bytes!("../assets/L3_object.png")).await,
         }
     }
 }

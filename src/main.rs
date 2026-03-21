@@ -4,6 +4,10 @@ use glam::Mat3;
 use glam::Vec2;
 use marmalade::audio;
 use marmalade::console;
+use marmalade::input::Key;
+
+use crate::assets::Assets;
+use crate::world::World;
 use marmalade::dom_stack;
 use marmalade::draw_scheduler;
 use marmalade::input;
@@ -14,9 +18,6 @@ use marmalade::render::canvas2d::DrawTarget2d;
 use marmalade::render::color;
 use marmalade::tick_scheduler::TickScheduler;
 
-use crate::assets::Assets;
-use crate::world::World;
-
 mod assets;
 mod world;
 
@@ -26,39 +27,37 @@ pub const WORLD_SIZE: Vec2 = Vec2::new(16., 9.);
 pub const SHREDDER_POS: Vec2 = Vec2::new(-15., -9.);
 pub const SHREDDER_SIZE: Vec2 = Vec2::new(4., 4.);
 pub const WHEEL_SIZE: Vec2 = Vec2::new(3., 3.);
+pub const VIEW_1_POS: Vec2 = Vec2::new(-16., -9.);
+pub const VIEW_1_SIZE: Vec2 = Vec2::new(32., 18.);
+
+pub const VIEW_2_POS: Vec2 = Vec2::new(-150., -85.);
+pub const VIEW_2_SIZE: Vec2 = Vec2::new(195., 110.);
+
+pub const VIEW_3_POS: Vec2 = Vec2::new(-1950., -490.);
+pub const VIEW_3_SIZE: Vec2 = Vec2::new(2240., 1260.);
+
+pub const VIEW_4_POS: Vec2 = Vec2::new(-8000., -8000.);
+pub const VIEW_4_SIZE: Vec2 = Vec2::new(32000., 18000.);
 
 fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
-    canvas.camera_view_ratio(Vec2::new(0.0, 0.0), world.view_radius, ASPECT_RATIO);
+    canvas.camera_view_ratio(world.cam_pos, world.view_radius, ASPECT_RATIO);
 
     let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
 
-    canvas.draw_rect(
-        Vec2::new(-16000., -9000.),
-        Vec2::new(32000., 18000.),
-        color::WHITE,
-        &assets.l4,
-    );
+    canvas.draw_rect(VIEW_4_POS, VIEW_4_SIZE, color::WHITE, &assets.l4);
 
     canvas.draw_rect(
-        Vec2::new(-1600., -900.),
-        Vec2::new(3200., 1800.),
+        Vec2::new(-2800., -2250.),
+        Vec2::new(4000., 4000.),
         color::WHITE,
-        &assets.l3,
+        &assets.earth_resource,
     );
 
-    canvas.draw_rect(
-        Vec2::new(-160., -90.),
-        Vec2::new(320., 180.),
-        color::WHITE,
-        &assets.l2,
-    );
+    canvas.draw_rect(VIEW_3_POS, VIEW_3_SIZE, color::WHITE, &assets.l3);
 
-    canvas.draw_rect(
-        Vec2::new(-16., -9.),
-        Vec2::new(32., 18.),
-        color::WHITE,
-        &assets.l1,
-    );
+    canvas.draw_rect(VIEW_2_POS, VIEW_2_SIZE, color::WHITE, &assets.l2);
+
+    canvas.draw_rect(VIEW_1_POS, VIEW_1_SIZE, color::WHITE, &assets.l1);
 
     if !input::is_button_down(Button::Left) {
         world.selected = None;
@@ -200,6 +199,10 @@ async fn async_main() {
     let mut tick_scheduler = TickScheduler::new(Duration::from_secs_f64(1.0 / 60.0)); // 60 HZ
     draw_scheduler::set_on_draw(move || {
         for _ in 0..tick_scheduler.tick_count() {
+            if input::is_key_pressed(Key::Space) {
+                world.stage += 1;
+            }
+
             world.tick();
 
             canvas.fit_screen();

@@ -5,6 +5,11 @@ use marmalade::{console, render::canvas2d::TextureRect};
 
 use crate::assets::Assets;
 
+use crate::{
+    VIEW_1_POS, VIEW_1_SIZE, VIEW_2_POS, VIEW_2_SIZE, VIEW_3_POS, VIEW_3_SIZE, VIEW_4_POS,
+    VIEW_4_SIZE,
+};
+
 const MAX_STAT: i8 = 5;
 const MAX_TIME: i32 = 60;
 const MIN_TIME: i32 = 12;
@@ -119,8 +124,10 @@ impl Scraper {
 pub struct World {
     pub selected: Option<Rc<RefCell<Resource>>>,
     pub view_radius: f32,
+    pub cam_pos: Vec2,
     pub resources: Vec<Rc<RefCell<Resource>>>,
     pub scraper: Scraper,
+    pub stage: u8,
 }
 
 impl World {
@@ -142,15 +149,42 @@ impl World {
         let scraper = Scraper::new();
 
         World {
+            stage: 1,
             selected: None,
-            view_radius: 4.,
+            view_radius: VIEW_1_SIZE.x / 2.,
+            cam_pos: Vec2::ZERO,
             resources,
             scraper,
         }
     }
 
+    pub fn handle_stage_pos(&mut self) {
+        let (target_radius, previous_radius) = match self.stage {
+            1 => (VIEW_1_SIZE.x / 2., VIEW_1_SIZE.x / 4.),
+            2 => (VIEW_2_SIZE.x / 2., VIEW_1_SIZE.x / 2.),
+            3 => (VIEW_3_SIZE.x / 2., VIEW_2_SIZE.x / 2.),
+            4 => (VIEW_4_SIZE.x / 2., VIEW_3_SIZE.x / 2.),
+            _ => panic!(),
+        };
+
+        if self.view_radius * 1.01 < target_radius {
+            self.view_radius *= 1.01;
+        }
+
+        let (target_pos, previous_pos) = match self.stage {
+            1 => (VIEW_1_POS + VIEW_1_SIZE / 2., VIEW_1_POS + VIEW_1_SIZE / 2.),
+            2 => (VIEW_2_POS + VIEW_2_SIZE / 2., VIEW_1_POS + VIEW_1_SIZE / 2.),
+            3 => (VIEW_3_POS + VIEW_3_SIZE / 2., VIEW_2_POS + VIEW_2_SIZE / 2.),
+            4 => (VIEW_4_POS + VIEW_4_SIZE / 2., VIEW_3_POS + VIEW_3_SIZE / 2.),
+            _ => panic!(),
+        };
+
+        let ratio = (self.view_radius - previous_radius) / (target_radius - previous_radius);
+        self.cam_pos = target_pos * ratio + (1. - ratio) * previous_pos;
+    }
+
     pub fn tick(&mut self) {
-        self.view_radius *= 1.0;
+        self.handle_stage_pos();
         self.scraper.tick();
     }
 }
