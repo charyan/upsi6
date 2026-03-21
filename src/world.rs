@@ -85,9 +85,9 @@ pub struct Scraper {
 impl Scraper {
     pub fn new() -> Self {
         Scraper {
-            lubrication: 1,
-            sharpening: 1,
-            energy: 1,
+            lubrication: MAX_STAT,
+            sharpening: MAX_STAT,
+            energy: MAX_STAT,
             current_ressource_shredded: None,
             current_shredding_tick: 0,
             target_shredding_tick: 0,
