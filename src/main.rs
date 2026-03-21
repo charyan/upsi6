@@ -134,6 +134,8 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
                     s.pos = world_pos;
                     drop(s);
                     world.scraper.shred(selected.clone());
+
+                    Some(audio::play(&assets.shreder_sound, 1.0));
                 }
             }
         } else {

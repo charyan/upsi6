@@ -54,6 +54,7 @@ pub struct Assets {
     pub earth_resource: TextureRect,
 
     pub music_act: [Audio; 4],
+    pub shreder_sound: Audio,
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -128,6 +129,10 @@ impl Assets {
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act3.mp3")).await,
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act4.mp3")).await,
             ],
+            shreder_sound: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/active_shreder_sound.mp3"
+            ))
+            .await,
         }
     }
 }
