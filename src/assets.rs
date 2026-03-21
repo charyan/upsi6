@@ -20,10 +20,10 @@ pub struct Assets {
     pub l2_letterbox: TextureRect,
     pub l2_light: TextureRect,
     pub l2_manholecover: TextureRect,
-    pub l2_object: TextureRect,
     pub l2_truck: TextureRect,
 
     pub l3: TextureRect,
+    pub l3_l2_object: TextureRect,
     pub l3_airport: TextureRect,
     pub l3_boat: TextureRect,
     pub l3_bridge: TextureRect,
@@ -84,11 +84,11 @@ impl Assets {
             l2_light: load_texture(canvas, include_bytes!("../assets/L2_light.png")).await,
             l2_manholecover: load_texture(canvas, include_bytes!("../assets/L2_manholecover.png"))
                 .await,
-            l2_object: load_texture(canvas, include_bytes!("../assets/L2_object.png")).await,
             l2_truck: load_texture(canvas, include_bytes!("../assets/L2_truck.png")).await,
 
             // l3
             l3: load_texture(canvas, include_bytes!("../assets/L3_base.png")).await,
+            l3_l2_object: load_texture(canvas, include_bytes!("../assets/L2_object.png")).await,
             l3_airport: load_texture(canvas, include_bytes!("../assets/L3_airport.png")).await,
             l3_boat: load_texture(canvas, include_bytes!("../assets/L3_boat.png")).await,
             l3_bridge: load_texture(canvas, include_bytes!("../assets/L3_bridge.png")).await,
