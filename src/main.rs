@@ -1,14 +1,16 @@
+use std::time::Duration;
+
 use glam::Vec2;
+use marmalade::audio;
 use marmalade::dom_stack;
 use marmalade::draw_scheduler;
-use marmalade::font;
-use marmalade::image;
 use marmalade::input;
 use marmalade::input::Button;
 use marmalade::loading;
 use marmalade::render::canvas2d::Canvas2d;
 use marmalade::render::canvas2d::DrawTarget2d;
 use marmalade::render::color;
+use marmalade::tick_scheduler::TickScheduler;
 
 use crate::assets::Assets;
 use crate::world::World;
@@ -102,24 +104,25 @@ async fn async_main() {
 
     let assets = Assets::load(&mut canvas).await;
 
-    let image = image::from_bytes(include_bytes!("../marmalade/resources/images/logo.png")).await;
-
-    let image_rect = canvas.create_texture(&image);
-
-    let mut font = font::from_bytes(font::MONOGRAM);
+    audio::play(&assets.s1, 1.0);
 
     let mut world = World::new();
 
+    let mut tick_scheduler = TickScheduler::new(Duration::from_secs_f64(1.0 / 60.0)); // 60 HZ
     draw_scheduler::set_on_draw(move || {
-        world.tick();
+        for _ in 0..tick_scheduler.tick_count() {
+            world.tick();
 
-        canvas.fit_screen();
+            canvas.fit_screen();
 
-        canvas.clear(color::rgb(0., 0., 0.));
+            canvas.clear(color::rgb(0., 0., 0.));
 
-        draw_game(&mut canvas, &mut world, &assets);
+            draw_game(&mut canvas, &mut world, &assets);
 
-        canvas.flush();
+            canvas.flush();
+
+            input::reset_pressed();
+        }
     });
 }
 

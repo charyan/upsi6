@@ -11,6 +11,7 @@ pub struct Assets {
     pub l3: TextureRect,
     pub l4: TextureRect,
     pub font: Font,
+    pub s1: Audio,
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -25,6 +26,10 @@ impl Assets {
             l3: load_texture(canvas, include_bytes!("../assets/L3_base.png")).await,
             l4: load_texture(canvas, include_bytes!("../assets/L4_base.png")).await,
             font: Font::new(font::MONOGRAM),
+            s1: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/shred/Destruction_heavy_metal_1.mp3"
+            ))
+            .await,
         }
     }
 }
