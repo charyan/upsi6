@@ -76,7 +76,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
         let r = resource.borrow();
 
         let radius = r.radius
-            * if r.movable && r.pos.distance(mouse_pos) < r.radius {
+            * if r.movable && r.pos.distance(mouse_pos) < (r.radius / 2.) {
                 if mouse_clicked {
                     world.selected = Some(resource.clone());
                 }
@@ -88,7 +88,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 } else if r.sharpening > 0 {
                     color::rgba(1., 0., 0., 0.4)
                 } else {
-                    color::rgba(1., 1., 1., 0.)
+                    color::rgba(0., 0., 0., 0.1)
                 };
 
                 canvas.draw_regular(
