@@ -120,283 +120,69 @@ impl Scraper {
 }
 
 fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
-    let mut res_l1 = Vec::new();
+    let make_res = |val, pos, a, b, c, asset| {
+        Rc::new(RefCell::new(Resource::new(val, pos, a, b, c, asset)))
+    };
 
-    res_l1.push(Rc::new(RefCell::new(Resource::new(
-        1.,
-        Vec2::new(1., 1.),
-        -1,
-        -1,
-        2,
-        assets.l1_can.clone(),
-    ))));
+    let l1_data = [
+        (1., Vec2::new(1., 1.), -1, -1,  2, assets.l1_can.clone()),
+        (1., Vec2::new(2., 2.), -1,  2, -1, assets.l1_chair.clone()),
+        (1., Vec2::new(3., 3.), -1, -1,  2, assets.l1_computer.clone()),
+        (1., Vec2::new(4., 4.), -1, -1, -1, assets.l1_desk.clone()),
+        (1., Vec2::new(5., 5.),  2, -1, -1, assets.l1_trash.clone()),
+    ];
 
-    res_l1.push(Rc::new(RefCell::new(Resource::new(
-        1.,
-        Vec2::new(2., 2.),
-        -1,
-        2,
-        -1,
-        assets.l1_chair.clone(),
-    ))));
+    let l2_data = [
+        (10., Vec2::new( 20.,  20.), -1, -1, -1, assets.l2_bench.clone()),
+        (20., Vec2::new( 30.,  20.), -1, -1, -1, assets.l2_car.clone()),
+        (10., Vec2::new(  0.,   0.), -1, -1, -1, assets.l2_light.clone()),
+        (10., Vec2::new(-10., -10.), -1, -1, -1, assets.l2_letterbox.clone()),
+        (10., Vec2::new(-20., -25.), -1, -1, -1, assets.l2_manholecover.clone()),
+        (10., Vec2::new(-90., -20.), -1, -1, -1, assets.l2_object.clone()),
+        (10., Vec2::new(-10., -25.), -1, -1, -1, assets.l2_truck.clone()),
+    ];
 
-    res_l1.push(Rc::new(RefCell::new(Resource::new(
-        1.,
-        Vec2::new(3., 3.),
-        -1,
-        -1,
-        2,
-        assets.l1_computer.clone(),
-    ))));
+    let l3_data = [
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_airport.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_boat.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_bridge.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_building.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_container.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_cow.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_crane.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_hotairbaloon.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_house.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_object.clone()),
+        (100., Vec2::new(100., -25.), -1, -1, -1, assets.l3_tree.clone()),
+    ];
 
-    res_l1.push(Rc::new(RefCell::new(Resource::new(
-        1.,
-        Vec2::new(4., 4.),
-        -1,
-        -1,
-        -1,
-        assets.l1_desk.clone(),
-    ))));
+    let l4_data = [
+        (1000., Vec2::new(100., -25.), -1, -1, -1, assets.l4_star.clone()),
+        (1000., Vec2::new(100., -25.), -1, -1, -1, assets.l4_sat.clone()),
+        (1000., Vec2::new(100., -25.), -1, -1, -1, assets.l4_helmet.clone()),
+        (1000., Vec2::new(100., -25.), -1, -1, -1, assets.l4_moon.clone()),
+        (1000., Vec2::new(100., -25.), -1, -1, -1, assets.l4_milkyway.clone()),
+        (1000., Vec2::new(100., -25.), -1, -1, -1, assets.l4_helmet.clone()),
+        (1000., Vec2::new(100., -25.), -1, -1, -1, assets.l4_comet.clone()),
+    ];
 
-    res_l1.push(Rc::new(RefCell::new(Resource::new(
-        1.,
-        Vec2::new(5., 5.),
-        2,
-        -1,
-        -1,
-        assets.l1_trash.clone(),
-    ))));
+    let res_l1 = l1_data.into_iter()
+        .map(|(v, p, a, b, c, asset)| make_res(v, p, a, b, c, asset))
+        .collect();
 
-    let mut res_l2 = Vec::new();
-    res_l2.push(Rc::new(RefCell::new(Resource::new(
-        10.,
-        Vec2::new(20., 20.),
-        -1,
-        -1,
-        -1,
-        assets.l2_bench.clone(),
-    ))));
+    let res_l2 = l2_data.into_iter()
+        .map(|(v, p, a, b, c, asset)| make_res(v, p, a, b, c, asset))
+        .collect();
 
-    res_l2.push(Rc::new(RefCell::new(Resource::new(
-        20.,
-        Vec2::new(30., 20.),
-        -1,
-        -1,
-        -1,
-        assets.l2_car.clone(),
-    ))));
+    let res_l3 = l3_data.into_iter()
+        .map(|(v, p, a, b, c, asset)| make_res(v, p, a, b, c, asset))
+        .collect();
 
-    res_l2.push(Rc::new(RefCell::new(Resource::new(
-        10.,
-        Vec2::new(0., 0.),
-        -1,
-        -1,
-        -1,
-        assets.l2_light.clone(),
-    ))));
+    let res_l4 = l4_data.into_iter()
+        .map(|(v, p, a, b, c, asset)| make_res(v, p, a, b, c, asset))
+        .collect();
 
-    res_l2.push(Rc::new(RefCell::new(Resource::new(
-        10.,
-        Vec2::new(-10., -10.),
-        -1,
-        -1,
-        -1,
-        assets.l2_letterbox.clone(),
-    ))));
-
-    res_l2.push(Rc::new(RefCell::new(Resource::new(
-        10.,
-        Vec2::new(-20., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l2_manholecover.clone(),
-    ))));
-
-    res_l2.push(Rc::new(RefCell::new(Resource::new(
-        10.,
-        Vec2::new(-90., -20.),
-        -1,
-        -1,
-        -1,
-        assets.l2_object.clone(),
-    ))));
-
-    res_l2.push(Rc::new(RefCell::new(Resource::new(
-        10.,
-        Vec2::new(-10., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l2_truck.clone(),
-    ))));
-
-    let mut res_l3 = Vec::new();
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_airport.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_boat.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_bridge.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_building.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_container.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_cow.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_crane.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_hotairbaloon.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_house.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_object.clone(),
-    ))));
-
-    res_l3.push(Rc::new(RefCell::new(Resource::new(
-        100.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l3_tree.clone(),
-    ))));
-
-    let mut res_l4 = Vec::new();
-    res_l4.push(Rc::new(RefCell::new(Resource::new(
-        1000.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l4_star.clone(),
-    ))));
-
-    res_l4.push(Rc::new(RefCell::new(Resource::new(
-        1000.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l4_sat.clone(),
-    ))));
-
-    res_l4.push(Rc::new(RefCell::new(Resource::new(
-        1000.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l4_helmet.clone(),
-    ))));
-
-    res_l4.push(Rc::new(RefCell::new(Resource::new(
-        1000.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l4_moon.clone(),
-    ))));
-
-    res_l4.push(Rc::new(RefCell::new(Resource::new(
-        1000.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l4_milkyway.clone(),
-    ))));
-
-    res_l4.push(Rc::new(RefCell::new(Resource::new(
-        1000.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l4_helmet.clone(),
-    ))));
-
-    res_l4.push(Rc::new(RefCell::new(Resource::new(
-        1000.,
-        Vec2::new(100., -25.),
-        -1,
-        -1,
-        -1,
-        assets.l4_comet.clone(),
-    ))));
-    let resources = [res_l1, res_l2, res_l3, res_l4];
-
-    resources
+    [res_l1, res_l2, res_l3, res_l4]
 }
 
 pub struct World {
