@@ -3,7 +3,6 @@ use std::time::Duration;
 use glam::Mat3;
 use glam::Vec2;
 use marmalade::audio;
-use marmalade::console;
 use marmalade::input::Key;
 
 use crate::assets::Assets;
@@ -27,24 +26,27 @@ pub const WORLD_SIZE: Vec2 = Vec2::new(16., 9.);
 pub const SHREDDER_POS: Vec2 = Vec2::new(-15., -9.);
 pub const SHREDDER_SIZE: Vec2 = Vec2::new(4., 4.);
 pub const WHEEL_SIZE: Vec2 = Vec2::new(3., 3.);
-pub const VIEW_1_POS: Vec2 = Vec2::new(-16., -9.);
-pub const VIEW_1_SIZE: Vec2 = Vec2::new(32., 18.);
 
-pub const VIEW_2_POS: Vec2 = Vec2::new(-150., -85.);
-pub const VIEW_2_SIZE: Vec2 = Vec2::new(195., 110.);
+pub const VIEW_POS: [Vec2; 4] = [
+    Vec2::new(-16., -9.),
+    Vec2::new(-150., -85.),
+    Vec2::new(-1950., -490.),
+    Vec2::new(-8000., -8000.),
+];
 
-pub const VIEW_3_POS: Vec2 = Vec2::new(-1950., -490.);
-pub const VIEW_3_SIZE: Vec2 = Vec2::new(2240., 1260.);
-
-pub const VIEW_4_POS: Vec2 = Vec2::new(-8000., -8000.);
-pub const VIEW_4_SIZE: Vec2 = Vec2::new(32000., 18000.);
+pub const VIEW_SIZE: [Vec2; 4] = [
+    Vec2::new(32., 18.),
+    Vec2::new(195., 110.),
+    Vec2::new(2240., 1260.),
+    Vec2::new(32000., 18000.),
+];
 
 fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
     canvas.camera_view_ratio(world.cam_pos, world.view_radius, ASPECT_RATIO);
 
     let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
 
-    canvas.draw_rect(VIEW_4_POS, VIEW_4_SIZE, color::WHITE, &assets.l4);
+    canvas.draw_rect(VIEW_POS[3], VIEW_SIZE[3], color::WHITE, &assets.l4);
 
     canvas.draw_rect(
         Vec2::new(-2800., -2250.),
@@ -53,11 +55,11 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
         &assets.earth_resource,
     );
 
-    canvas.draw_rect(VIEW_3_POS, VIEW_3_SIZE, color::WHITE, &assets.l3);
+    canvas.draw_rect(VIEW_POS[2], VIEW_SIZE[2], color::WHITE, &assets.l3);
 
-    canvas.draw_rect(VIEW_2_POS, VIEW_2_SIZE, color::WHITE, &assets.l2);
+    canvas.draw_rect(VIEW_POS[1], VIEW_SIZE[1], color::WHITE, &assets.l2);
 
-    canvas.draw_rect(VIEW_1_POS, VIEW_1_SIZE, color::WHITE, &assets.l1);
+    canvas.draw_rect(VIEW_POS[0], VIEW_SIZE[0], color::WHITE, &assets.l1);
 
     if !input::is_button_down(Button::Left) {
         world.selected = None;
@@ -65,7 +67,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
 
     let mouse_clicked = input::is_button_pressed(Button::Left);
 
-    for resource in &world.resources {
+    for resource in &world.resources[world.stage - 1] {
         let r = resource.borrow();
 
         let radius = r.radius
@@ -73,12 +75,20 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
                 if mouse_clicked {
                     world.selected = Some(resource.clone());
                 }
+                canvas.draw_regular(
+                    r.pos,
+                    r.radius / 2.,
+                    64,
+                    color::rgba(1.0, 0., 0., 0.2),
+                    &canvas.white_texture(),
+                );
                 1.1
             } else {
                 1.0
             };
 
-        canvas.draw_regular(r.pos, radius, 64, color::WHITE, &r.texture);
+        let size = Vec2::new(radius, radius);
+        canvas.draw_rect(r.pos - size / 2., size, color::WHITE, &r.texture);
     }
 
     if let Some(selected) = &world.selected {
@@ -105,7 +115,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
                         SHREDDER_POS + Vec2::new(SHREDDER_SIZE.x / 2., SHREDDER_SIZE.y),
                     );
 
-                    canvas.camera_view_ratio(Vec2::new(0.0, 0.0), world.view_radius, ASPECT_RATIO);
+                    canvas.camera_view_ratio(world.cam_pos, world.view_radius, ASPECT_RATIO);
 
                     let world_pos = canvas.screen_to_world_pos(screen_pos);
 
@@ -119,7 +129,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
         }
     }
 
-    world.resources.retain(|x| x.borrow().alive);
+    world.resources[world.stage - 1].retain(|x| x.borrow().alive);
 
     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
@@ -199,7 +209,7 @@ async fn async_main() {
     let mut tick_scheduler = TickScheduler::new(Duration::from_secs_f64(1.0 / 60.0)); // 60 HZ
     draw_scheduler::set_on_draw(move || {
         for _ in 0..tick_scheduler.tick_count() {
-            if input::is_key_pressed(Key::Space) {
+            if world.resources[world.stage - 1].is_empty() {
                 world.stage += 1;
             }
 
