@@ -1,7 +1,11 @@
 use std::time::Duration;
 
 use glam::Vec2;
+<<<<<<< HEAD
 use marmalade::audio;
+=======
+use marmalade::console;
+>>>>>>> 18d8520 (add scraper)
 use marmalade::dom_stack;
 use marmalade::draw_scheduler;
 use marmalade::input;
@@ -64,7 +68,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
         let r = resource.borrow();
 
         let radius = r.radius
-            * if r.pos.distance(mouse_pos) < r.radius {
+            * if r.movable && r.pos.distance(mouse_pos) < r.radius {
                 if mouse_clicked {
                     world.selected = Some(resource.clone());
                 }
@@ -83,12 +87,41 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
     }
 
     if let Some(selected) = &world.selected {
-        let mut s = selected.borrow_mut();
+        if selected.borrow().movable {
+            let mut s = selected.borrow_mut();
 
-        let dist = mouse_pos - s.pos;
+            let dist = mouse_pos - s.pos;
 
-        s.pos += dist * 0.1;
+            s.pos += dist * 0.1;
+
+            let screen_pos = canvas.world_to_screen_pos(s.pos);
+
+            canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
+
+            let interface_pos = canvas.screen_to_world_pos(screen_pos);
+
+            drop(s);
+
+            if world.scraper.current_ressource_shredded.is_none() {
+                if interface_pos.distance(Vec2::new(-16., -9.)) < 1. {
+                    world.scraper.shred(selected.clone());
+                }
+            }
+        } else {
+            world.selected = None;
+        }
     }
+
+    world.resources.retain(|x| x.borrow().alive);
+
+    canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
+
+    canvas.draw_rect(
+        Vec2::new(-16., -9.),
+        Vec2::new(1., 1.),
+        color::rgb(0., 0., 0.),
+        &assets.l1,
+    );
 }
 
 async fn async_main() {
