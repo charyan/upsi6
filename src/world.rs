@@ -1,7 +1,10 @@
 use std::{cell::RefCell, rc::Rc};
 
 use glam::Vec2;
-use marmalade::render::canvas2d::TextureRect;
+use marmalade::{
+    audio::{self, Audio, SoundHandle},
+    render::canvas2d::TextureRect,
+};
 
 use crate::{VIEW_POS, VIEW_SIZE, assets::Assets};
 
@@ -402,7 +405,8 @@ pub struct World {
     pub cam_pos: Vec2,
     pub resources: [Vec<Rc<RefCell<Resource>>>; 4],
     pub scraper: Scraper,
-    pub stage: usize,
+    stage: usize,
+    pub music_handle: Option<SoundHandle>,
 }
 
 impl World {
@@ -418,6 +422,7 @@ impl World {
             cam_pos: Vec2::ZERO,
             resources,
             scraper,
+            music_handle: None,
         }
     }
 
@@ -456,6 +461,18 @@ impl World {
 
         let ratio = (self.view_radius - previous_radius) / (target_radius - previous_radius);
         self.cam_pos = target_pos * ratio + (1. - ratio) * previous_pos;
+    }
+
+    pub fn get_stage(&self) -> usize {
+        self.stage
+    }
+
+    pub fn next_stage(&mut self, assets: &Assets) {
+        self.stage += 1;
+        if let Some(music_handle) = &self.music_handle {
+            music_handle.stop();
+        }
+        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage - 1], 1.0));
     }
 
     pub fn tick(&mut self) {

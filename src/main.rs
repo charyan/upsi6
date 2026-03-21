@@ -68,7 +68,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
 
     let mouse_clicked = input::is_button_pressed(Button::Left);
 
-    for resource in &world.resources[world.stage - 1] {
+    for resource in &world.resources[world.get_stage() - 1] {
         let r = resource.borrow();
 
         let radius = r.radius
@@ -141,7 +141,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
         }
     }
 
-    world.resources[world.stage - 1].retain(|x| x.borrow().alive);
+    world.resources[world.get_stage() - 1].retain(|x| x.borrow().alive);
 
     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
@@ -214,15 +214,13 @@ async fn async_main() {
 
     let assets = Assets::load(&mut canvas).await;
 
-    audio::play(&assets.s1, 1.0);
-
     let mut world = World::new(&assets);
 
     let mut tick_scheduler = TickScheduler::new(Duration::from_secs_f64(1.0 / 60.0)); // 60 HZ
     draw_scheduler::set_on_draw(move || {
         for _ in 0..tick_scheduler.tick_count() {
-            if world.resources[world.stage - 1].is_empty() {
-                world.stage += 1;
+            if world.resources[world.get_stage() - 1].is_empty() {
+                world.next_stage(&assets);
             }
 
             world.tick();

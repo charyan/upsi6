@@ -52,6 +52,8 @@ pub struct Assets {
     pub shredder_box: TextureRect,
 
     pub earth_resource: TextureRect,
+
+    pub music_act: [Audio; 4],
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -119,6 +121,13 @@ impl Assets {
                 .await,
             shredder_box: load_texture(canvas, include_bytes!("../assets/shredder_box.png")).await,
             earth_resource: load_texture(canvas, include_bytes!("../assets/L3_object.png")).await,
+
+            music_act: [
+                audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act1.mp3")).await,
+                audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act2.mp3")).await,
+                audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act3.mp3")).await,
+                audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act4.mp3")).await,
+            ],
         }
     }
 }

@@ -20,7 +20,7 @@ pub async fn from_bytes(bytes: &[u8]) -> Audio {
     .unwrap()
 }
 
-type SoundHandle = AudioBufferSourceNode;
+pub type SoundHandle = AudioBufferSourceNode;
 
 pub fn play(audio: &Audio, volume: f32) -> SoundHandle {
     CONTEXT.with(|c| {
