@@ -136,17 +136,17 @@ impl Scraper {
 
                 if self.lubrication < 0 {
                     self.lubrication = 0;
-                    // self.waiting_key = Some(random_key());
+                    self.waiting_key = Some(random_key());
                 }
 
                 if self.energy < 0 {
                     self.energy = 0;
-                    // self.waiting_key = Some(random_key());
+                    self.waiting_key = Some(random_key());
                 }
 
                 if self.sharpening < 0 {
                     self.sharpening = 0;
-                    // self.waiting_key = Some(random_key());
+                    self.waiting_key = Some(random_key());
                 }
 
                 if self.waiting_key.is_some() {
@@ -662,7 +662,7 @@ impl World {
         let scraper = Scraper::new();
 
         World {
-            stage: 4,
+            stage: 0,
             selected: None,
             view_radius: VIEW_SIZE[0].x / 2.,
             cam_pos: Vec2::ZERO,
