@@ -211,22 +211,22 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
     ];
 
     let l2_data = [
-        (15., Vec2::new(-151., -35.5), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-122.8, -52.4), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-70.9, -80.9), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-146.5, 15.6), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-118.0, 0.87), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-85.3, -20.5), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-45.4, -41.1), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-10.9, -64.0), -1, -1, -1, assets.l2_light.clone()),
-        (10., Vec2::new(-105.4, -37.57949), -1, -1, -1, assets.l2_manholecover.clone()),
-        (10., Vec2::new(-55.5, -68.0), -1, -1, -1, assets.l2_manholecover.clone()),
-        (20., Vec2::new(-130.6, -24.13), -1, -1, -1, assets.l2_car.clone()),
-        (40., Vec2::new(-80.0, -54.7), -1, -1, -1, assets.l2_truck.clone()),
-        (6., Vec2::new(4.7, -66.78), -1, -1, -1, assets.l2_letterbox.clone()),
-        (10., Vec2::new(-86.5, 14.75), -1, -1, -1, assets.l2_bench.clone()),
-        (10., Vec2::new(-85.79, -0.71), -1, -1, -1, assets.l2_bench.clone()),
-        (10., Vec2::new(-61.2, 3.6), -1, -1, -1, assets.l2_bench.clone()),
+        (15., Vec2::new(-151., -35.5), 0, -1, 1, assets.l2_light.clone()),
+        (15., Vec2::new(-122.8, -52.4), 0, -1, 1, assets.l2_light.clone()),
+        (15., Vec2::new(-70.9, -80.9), 0, -1, 1, assets.l2_light.clone()),
+        (15., Vec2::new(-146.5, 15.6), 0, -1, 1, assets.l2_light.clone()),
+        (15., Vec2::new(-118.0, 0.87), 0, -1, 1, assets.l2_light.clone()),
+        (15., Vec2::new(-85.3, -20.5), 0, -1, 1, assets.l2_light.clone()),
+        (15., Vec2::new(-45.4, -41.1), 0, -1, 1, assets.l2_light.clone()),
+        (15., Vec2::new(-10.9, -64.0), 0, -1, 1, assets.l2_light.clone()),
+        (10., Vec2::new(-105.4, -37.57949), -1, 2, -1, assets.l2_manholecover.clone()),
+        (10., Vec2::new(-55.5, -68.0), -1, 2, -1, assets.l2_manholecover.clone()),
+        (20., Vec2::new(-130.6, -24.13), 3, -1, -1, assets.l2_car.clone()),
+        (40., Vec2::new(-80.0, -54.7), 3, -1, -1, assets.l2_truck.clone()),
+        (6., Vec2::new(4.7, -66.78), 0, 1, 0, assets.l2_letterbox.clone()),
+        (10., Vec2::new(-86.5, 14.75), -1, 1, -1, assets.l2_bench.clone()),
+        (10., Vec2::new(-85.79, -0.71), -1, 1, -1, assets.l2_bench.clone()),
+        (10., Vec2::new(-61.2, 3.6), -1, 1, -1, assets.l2_bench.clone()),
     ];
 
 
@@ -313,7 +313,7 @@ impl World {
         let scraper = Scraper::new();
 
         World {
-            stage: 0,
+            stage: 2,
             selected: None,
             view_radius: VIEW_SIZE[0].x / 2.,
             cam_pos: Vec2::ZERO,
