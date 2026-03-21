@@ -195,9 +195,8 @@ impl Input {
                 Closure::wrap(Box::new(move |event: MouseEvent| {
                     event.prevent_default();
                     if let Some(button) = Button::from_code(event.button()) {
-                        if !(buttons_down_clone.borrow_mut().insert(button)) {
-                            buttons_pressed_clone.borrow_mut().insert(button);
-                        }
+                        buttons_down_clone.borrow_mut().insert(button);
+                        buttons_pressed_clone.borrow_mut().insert(button);
                     }
                 }) as Box<dyn Fn(MouseEvent)>)
                 .into_js_value()
@@ -257,8 +256,9 @@ impl Input {
                 Closure::wrap(Box::new(move |event: KeyboardEvent| {
                     event.prevent_default();
                     if let Some(key) = Key::from_code(event.code().as_str()) {
-                        keys_down_clone.borrow_mut().insert(key);
-                        keys_pressed_clone.borrow_mut().insert(key);
+                        if keys_down_clone.borrow_mut().insert(key) {
+                            keys_pressed_clone.borrow_mut().insert(key);
+                        }
                     }
                 }) as Box<dyn Fn(KeyboardEvent)>)
                 .into_js_value()
