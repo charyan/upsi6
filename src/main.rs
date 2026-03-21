@@ -33,14 +33,16 @@ pub const WHEEL_SIZE: Vec2 = Vec2::new(3., 3.);
 const TARGET_PRESS: i32 = 10;
 const VALUE_MIN: i8 = 2;
 
-pub const VIEW_POS: [Vec2; 4] = [
+pub const VIEW_POS: [Vec2; 5] = [
+    Vec2::new(-16., -9.),
     Vec2::new(-16., -9.),
     Vec2::new(-150., -85.),
     Vec2::new(-1950., -490.),
     Vec2::new(-8000., -8000.),
 ];
 
-pub const VIEW_SIZE: [Vec2; 4] = [
+pub const VIEW_SIZE: [Vec2; 5] = [
+    Vec2::new(32., 18.),
     Vec2::new(32., 18.),
     Vec2::new(195., 110.),
     Vec2::new(2240., 1260.),
@@ -52,7 +54,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
 
     let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
 
-    canvas.draw_rect(VIEW_POS[3], VIEW_SIZE[3], color::WHITE, &assets.l4);
+    canvas.draw_rect(VIEW_POS[4], VIEW_SIZE[4], color::WHITE, &assets.l4);
 
     canvas.draw_rect(
         Vec2::new(-2800., -2250.),
@@ -61,11 +63,11 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
         &assets.earth_resource,
     );
 
-    canvas.draw_rect(VIEW_POS[2], VIEW_SIZE[2], color::WHITE, &assets.l3);
+    canvas.draw_rect(VIEW_POS[3], VIEW_SIZE[3], color::WHITE, &assets.l3);
 
-    canvas.draw_rect(VIEW_POS[1], VIEW_SIZE[1], color::WHITE, &assets.l2);
+    canvas.draw_rect(VIEW_POS[2], VIEW_SIZE[2], color::WHITE, &assets.l2);
 
-    canvas.draw_rect(VIEW_POS[0], VIEW_SIZE[0], color::WHITE, &assets.l1);
+    canvas.draw_rect(VIEW_POS[1], VIEW_SIZE[1], color::WHITE, &assets.l1);
 
     if !input::is_button_down(Button::Left) {
         world.selected = None;
@@ -77,39 +79,64 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
 
     let mouse_clicked = input::is_button_pressed(Button::Left);
 
-    for resource in &world.resources[world.get_stage() - 1] {
-        let r = resource.borrow();
+    if world.email {
+        canvas.draw_rect(
+            Vec2::new(-8., -9.),
+            Vec2::new(16., 18.),
+            color::WHITE,
+            &assets.gui_intro_email,
+        );
 
-        let radius = r.radius
-            * if r.movable && r.pos.distance(mouse_pos) < (r.radius / 2.) {
-                if mouse_clicked {
-                    world.selected = Some(resource.clone());
-                }
+        canvas.draw_rect(
+            Vec2::new(0., -8.5),
+            Vec2::new(6., 4.),
+            color::WHITE,
+            &assets.gui_intro_button_instructions,
+        );
 
-                let color_circle: Vec4 = if r.energy > 0 {
-                    color::rgba(1., 1., 0., 0.5)
-                } else if r.lubrication > 0 {
-                    color::rgba(1., 0., 0., 0.4)
-                } else if r.sharpening > 0 {
-                    color::rgba(0., 0., 1., 0.4)
+        if mouse_clicked
+            && mouse_pos.x < 6.
+            && mouse_pos.x > 0.
+            && mouse_pos.y < -4.5
+            && mouse_pos.y > -8.5
+        {
+            world.email = false;
+        }
+    } else {
+        for resource in &world.resources[world.get_stage()] {
+            let r = resource.borrow();
+
+            let radius = r.radius
+                * if r.movable && r.pos.distance(mouse_pos) < (r.radius / 2.) {
+                    if mouse_clicked {
+                        world.selected = Some(resource.clone());
+                    }
+
+                    let color_circle: Vec4 = if r.energy > 0 {
+                        color::rgba(1., 1., 0., 0.5)
+                    } else if r.lubrication > 0 {
+                        color::rgba(1., 0., 0., 0.4)
+                    } else if r.sharpening > 0 {
+                        color::rgba(0., 0., 1., 0.4)
+                    } else {
+                        color::rgba(0., 0., 0., 0.1)
+                    };
+
+                    canvas.draw_regular(
+                        r.pos,
+                        r.radius / 2.,
+                        64,
+                        color_circle,
+                        &canvas.white_texture(),
+                    );
+                    1.1
                 } else {
-                    color::rgba(0., 0., 0., 0.1)
+                    1.0
                 };
 
-                canvas.draw_regular(
-                    r.pos,
-                    r.radius / 2.,
-                    64,
-                    color_circle,
-                    &canvas.white_texture(),
-                );
-                1.1
-            } else {
-                1.0
-            };
-
-        let size = Vec2::new(radius, radius);
-        canvas.draw_rect(r.pos - size / 2., size, color::WHITE, &r.texture);
+            let size = Vec2::new(radius, radius);
+            canvas.draw_rect(r.pos - size / 2., size, color::WHITE, &r.texture);
+        }
     }
 
     if let Some(selected) = &world.selected {
@@ -154,7 +181,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
         }
     }
 
-    world.resources[world.get_stage() - 1].retain(|x| x.borrow().alive);
+    world.resources[world.get_stage()].retain(|x| x.borrow().alive);
 
     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
@@ -315,7 +342,7 @@ async fn async_main() {
     let mut tick_scheduler = TickScheduler::new(Duration::from_secs_f64(1.0 / 60.0)); // 60 HZ
     draw_scheduler::set_on_draw(move || {
         for _ in 0..tick_scheduler.tick_count() {
-            if world.resources[world.get_stage() - 1].is_empty() {
+            if world.resources[world.get_stage()].is_empty() {
                 world.next_stage(&assets);
             }
 

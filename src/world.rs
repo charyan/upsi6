@@ -176,9 +176,18 @@ impl Scraper {
     }
 }
 
-fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
+fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
     let make_res =
         |val, pos, a, b, c, asset| Rc::new(RefCell::new(Resource::new(val, pos, a, b, c, asset)));
+
+    let l0_data = [(
+        18.,
+        Vec2::new(0., 0.),
+        0,
+        0,
+        0,
+        assets.gui_intro_instructions.clone(),
+    )];
 
     let l1_data = [
         (6., Vec2::new(2.3, -2.), -1, 2, -1, assets.l1_chair.clone()),
@@ -219,30 +228,134 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
     ];
 
     let l2_data = [
-        (15., Vec2::new(-151., -35.5), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-122.8, -52.4), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-70.9, -80.9), -1, -1, -1, assets.l2_light.clone()),
-
-
-        (15., Vec2::new(-146.5, 15.6), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-118.0, 0.87), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-85.3, -20.5), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-45.4, -41.1), -1, -1, -1, assets.l2_light.clone()),
-        (15., Vec2::new(-10.9, -64.0), -1, -1, -1, assets.l2_light.clone()),
-
-
-        (10., Vec2::new(-105.4, -37.57949), -1, -1, -1, assets.l2_manholecover.clone()),
-        (10., Vec2::new(-55.5, -68.0), -1, -1, -1, assets.l2_manholecover.clone()),
-
-        (20., Vec2::new(-130.6, -24.13), -1, -1, -1, assets.l2_car.clone()),
-
-        (40., Vec2::new(-80.0, -54.7), -1, -1, -1, assets.l2_truck.clone()),
-
-        (6., Vec2::new(4.7, -66.78), -1, -1, -1, assets.l2_letterbox.clone()),
-
-        (10., Vec2::new(-86.5, 14.75), -1, -1, -1, assets.l2_bench.clone()),
-        (10., Vec2::new(-85.79, -0.71), -1, -1, -1, assets.l2_bench.clone()),
-        (10., Vec2::new(-61.2, 3.6), -1, -1, -1, assets.l2_bench.clone()),
+        (
+            15.,
+            Vec2::new(-151., -35.5),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            15.,
+            Vec2::new(-122.8, -52.4),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            15.,
+            Vec2::new(-70.9, -80.9),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            15.,
+            Vec2::new(-146.5, 15.6),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            15.,
+            Vec2::new(-118.0, 0.87),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            15.,
+            Vec2::new(-85.3, -20.5),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            15.,
+            Vec2::new(-45.4, -41.1),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            15.,
+            Vec2::new(-10.9, -64.0),
+            -1,
+            -1,
+            -1,
+            assets.l2_light.clone(),
+        ),
+        (
+            10.,
+            Vec2::new(-105.4, -37.57949),
+            -1,
+            -1,
+            -1,
+            assets.l2_manholecover.clone(),
+        ),
+        (
+            10.,
+            Vec2::new(-55.5, -68.0),
+            -1,
+            -1,
+            -1,
+            assets.l2_manholecover.clone(),
+        ),
+        (
+            20.,
+            Vec2::new(-130.6, -24.13),
+            -1,
+            -1,
+            -1,
+            assets.l2_car.clone(),
+        ),
+        (
+            40.,
+            Vec2::new(-80.0, -54.7),
+            -1,
+            -1,
+            -1,
+            assets.l2_truck.clone(),
+        ),
+        (
+            6.,
+            Vec2::new(4.7, -66.78),
+            -1,
+            -1,
+            -1,
+            assets.l2_letterbox.clone(),
+        ),
+        (
+            10.,
+            Vec2::new(-86.5, 14.75),
+            -1,
+            -1,
+            -1,
+            assets.l2_bench.clone(),
+        ),
+        (
+            10.,
+            Vec2::new(-85.79, -0.71),
+            -1,
+            -1,
+            -1,
+            assets.l2_bench.clone(),
+        ),
+        (
+            10.,
+            Vec2::new(-61.2, 3.6),
+            -1,
+            -1,
+            -1,
+            assets.l2_bench.clone(),
+        ),
     ];
 
     let l3_data = [
@@ -403,6 +516,11 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
         ),
     ];
 
+    let res_l0 = l0_data
+        .into_iter()
+        .map(|(v, p, a, b, c, asset)| make_res(v, p, a, b, c, asset))
+        .collect();
+
     let res_l1 = l1_data
         .into_iter()
         .map(|(v, p, a, b, c, asset)| make_res(v, p, a, b, c, asset))
@@ -423,16 +541,17 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 4] {
         .map(|(v, p, a, b, c, asset)| make_res(v, p, a, b, c, asset))
         .collect();
 
-    [res_l1, res_l2, res_l3, res_l4]
+    [res_l0, res_l1, res_l2, res_l3, res_l4]
 }
 
 pub struct World {
     pub selected: Option<Rc<RefCell<Resource>>>,
     pub view_radius: f32,
     pub cam_pos: Vec2,
-    pub resources: [Vec<Rc<RefCell<Resource>>>; 4],
+    pub resources: [Vec<Rc<RefCell<Resource>>>; 5],
     pub scraper: Scraper,
     stage: usize,
+    pub email: bool,
     pub music_handle: Option<SoundHandle>,
     pub timer: u64,
 }
@@ -444,12 +563,13 @@ impl World {
         let scraper = Scraper::new();
 
         World {
-            stage: 2,
+            stage: 0,
             selected: None,
             view_radius: VIEW_SIZE[0].x / 2.,
             cam_pos: Vec2::ZERO,
             resources,
             scraper,
+            email: true,
             music_handle: None,
             timer: 0,
         }
@@ -457,10 +577,12 @@ impl World {
 
     pub fn handle_stage_pos(&mut self) {
         let (target_radius, previous_radius) = match self.stage {
-            1 => (VIEW_SIZE[0].x / 2., VIEW_SIZE[0].x / 4.),
-            2 => (VIEW_SIZE[1].x / 2., VIEW_SIZE[0].x / 2.),
-            3 => (VIEW_SIZE[2].x / 2., VIEW_SIZE[1].x / 2.),
-            4 => (VIEW_SIZE[3].x / 2., VIEW_SIZE[2].x / 2.),
+            0 => (VIEW_SIZE[0].x / 2., VIEW_SIZE[0].x / 4.),
+            1 => (VIEW_SIZE[1].x / 2., VIEW_SIZE[0].x / 4.),
+            2 => (VIEW_SIZE[2].x / 2., VIEW_SIZE[1].x / 2.),
+            3 => (VIEW_SIZE[3].x / 2., VIEW_SIZE[2].x / 2.),
+            4 => (VIEW_SIZE[4].x / 2., VIEW_SIZE[3].x / 2.),
+
             _ => panic!(),
         };
 
@@ -469,21 +591,25 @@ impl World {
         }
 
         let (target_pos, previous_pos) = match self.stage {
-            1 => (
+            0 => (
                 VIEW_POS[0] + VIEW_SIZE[0] / 2.,
+                VIEW_POS[0] + VIEW_SIZE[0] / 2.,
+            ),
+            1 => (
+                VIEW_POS[1] + VIEW_SIZE[1] / 2.,
                 VIEW_POS[0] + VIEW_SIZE[0] / 2.,
             ),
             2 => (
-                VIEW_POS[1] + VIEW_SIZE[1] / 2.,
+                VIEW_POS[2] + VIEW_SIZE[2] / 2.,
                 VIEW_POS[0] + VIEW_SIZE[0] / 2.,
             ),
             3 => (
-                VIEW_POS[2] + VIEW_SIZE[2] / 2.,
-                VIEW_POS[1] + VIEW_SIZE[1] / 2.,
-            ),
-            4 => (
                 VIEW_POS[3] + VIEW_SIZE[3] / 2.,
                 VIEW_POS[2] + VIEW_SIZE[2] / 2.,
+            ),
+            4 => (
+                VIEW_POS[4] + VIEW_SIZE[4] / 2.,
+                VIEW_POS[3] + VIEW_SIZE[3] / 2.,
             ),
             _ => panic!(),
         };
@@ -501,7 +627,7 @@ impl World {
         if let Some(music_handle) = &self.music_handle {
             music_handle.stop();
         }
-        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage - 1], 1.0));
+        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage], 1.0));
     }
 
     pub fn tick(&mut self) {

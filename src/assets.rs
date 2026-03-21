@@ -6,6 +6,10 @@ use marmalade::{
 };
 
 pub struct Assets {
+    pub gui_intro_button_instructions: TextureRect,
+    pub gui_intro_email: TextureRect,
+    pub gui_intro_instructions: TextureRect,
+
     pub l1: TextureRect, // 3840 x 2160
     pub l1_can: TextureRect,
     pub l1_chair: TextureRect,
@@ -78,6 +82,20 @@ async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
 impl Assets {
     pub async fn load(canvas: &mut Canvas2d) -> Self {
         Self {
+            // l0
+            gui_intro_button_instructions: load_texture(
+                canvas,
+                include_bytes!("../assets/gui_intro_button_instructions.png"),
+            )
+            .await,
+            gui_intro_email: load_texture(canvas, include_bytes!("../assets/gui_intro_email.png"))
+                .await,
+            gui_intro_instructions: load_texture(
+                canvas,
+                include_bytes!("../assets/gui_intro_instructions.png"),
+            )
+            .await,
+
             // l1
             l1: load_texture(canvas, include_bytes!("../assets/L1_base.png")).await,
             l1_can: load_texture(canvas, include_bytes!("../assets/L1_can.png")).await,
