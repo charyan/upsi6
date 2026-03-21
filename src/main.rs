@@ -63,19 +63,25 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
         &assets.earth_resource,
     );
 
-    canvas.draw_rect(VIEW_POS[3], VIEW_SIZE[3], color::WHITE, &assets.l3);
+    if world.get_stage() <= 3 {
+        canvas.draw_rect(VIEW_POS[3], VIEW_SIZE[3], color::WHITE, &assets.l3);
+    }
 
-    canvas.draw_rect(VIEW_POS[2], VIEW_SIZE[2], color::WHITE, &assets.l2);
+    if world.get_stage() <= 2 {
+        canvas.draw_rect(VIEW_POS[2], VIEW_SIZE[2], color::WHITE, &assets.l2);
+    }
 
-    canvas.draw_rect(VIEW_POS[1], VIEW_SIZE[1], color::WHITE, &assets.l1);
+    if world.get_stage() <= 1 {
+        canvas.draw_rect(VIEW_POS[1], VIEW_SIZE[1], color::WHITE, &assets.l1);
+    }
 
     if !input::is_button_down(Button::Left) {
         world.selected = None;
     }
 
-    if input::is_button_pressed(Button::Left) {
-        console::log(&format!("x = {}, y = {}", mouse_pos.x, mouse_pos.y));
-    }
+    // if input::is_button_pressed(Button::Left) {
+    //     console::log(&format!("x = {}, y = {}", mouse_pos.x, mouse_pos.y));
+    // }
 
     let mouse_clicked = input::is_button_pressed(Button::Left);
 
@@ -290,7 +296,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
     }
 
     canvas.draw_rect(
-        Vec2::new(12., 5.),
+        Vec2::new(12., 6.),
         Vec2::new(4., 4.),
         color::WHITE,
         &assets.gui_time,
@@ -301,9 +307,9 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
     let timer_minutes = timer % 60;
     let timer_hours = timer / 60 + 8; // start work at height
     canvas.draw_text(
-        Vec2::new(14.2, 7.5),
+        Vec2::new(14.1, 8.15),
         0.6,
-        &format!("{timer_hours:2}h{timer_minutes}"),
+        &format!("{timer_hours:02}h{timer_minutes:02}"),
         &mut assets.font,
         color::rgb(0., 0., 0.),
         &canvas.white_texture(),
