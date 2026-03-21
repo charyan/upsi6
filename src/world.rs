@@ -1,7 +1,9 @@
 use std::{cell::RefCell, rc::Rc};
 
 use glam::Vec2;
-use marmalade::console;
+use marmalade::{console, render::canvas2d::TextureRect};
+
+use crate::assets::Assets;
 
 const MAX_STAT: i8 = 5;
 const MAX_TIME: i32 = 60;
@@ -15,10 +17,18 @@ pub struct Resource {
     pub energy: i8,
     pub alive: bool,
     pub movable: bool,
+    pub texture: TextureRect,
 }
 
 impl Resource {
-    pub fn new(radius: f32, pos: Vec2, lubrication: i8, sharpening: i8, energy: i8) -> Resource {
+    pub fn new(
+        radius: f32,
+        pos: Vec2,
+        lubrication: i8,
+        sharpening: i8,
+        energy: i8,
+        texture: TextureRect,
+    ) -> Resource {
         Resource {
             radius,
             pos,
@@ -27,6 +37,7 @@ impl Resource {
             energy,
             alive: true,
             movable: true,
+            texture,
         }
     }
 }
@@ -113,7 +124,7 @@ pub struct World {
 }
 
 impl World {
-    pub fn new() -> World {
+    pub fn new(assets: &Assets) -> World {
         let mut resources = Vec::new();
 
         for x in 0..3 {
@@ -124,6 +135,7 @@ impl World {
                     -1,
                     -1,
                     -1,
+                    assets.l4_milkyway.clone(),
                 ))));
             }
         }

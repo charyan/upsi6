@@ -79,13 +79,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &Assets) {
                 1.0
             };
 
-        canvas.draw_regular(
-            r.pos,
-            radius,
-            64,
-            color::rgb(1.0, 0.0, 0.0),
-            &canvas.white_texture(),
-        );
+        canvas.draw_regular(r.pos, radius, 64, color::WHITE, &r.texture);
     }
 
     if let Some(selected) = &world.selected {
@@ -201,7 +195,7 @@ async fn async_main() {
 
     audio::play(&assets.s1, 1.0);
 
-    let mut world = World::new();
+    let mut world = World::new(&assets);
 
     let mut tick_scheduler = TickScheduler::new(Duration::from_secs_f64(1.0 / 60.0)); // 60 HZ
     draw_scheduler::set_on_draw(move || {
