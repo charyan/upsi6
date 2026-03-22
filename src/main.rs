@@ -182,6 +182,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 && mouse_pos.y < -4.5
                 && mouse_pos.y > -8.5
             {
+                world.music_handle = Some(audio::play_loop(&mut assets.music_act[0], 1.));
                 world.state = WorldState::PLAY;
             }
         }

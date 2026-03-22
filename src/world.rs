@@ -635,6 +635,7 @@ pub struct World {
     stage: usize,
     pub state: WorldState,
     pub music_handle: Option<SoundHandle>,
+    pub background_handle: Option<SoundHandle>,
     pub timer: u64,
     pub end_tick: u64,
     pub transition_running: bool
@@ -655,6 +656,7 @@ impl World {
             scraper,
             state: WorldState::EMAIL,
             music_handle: None,
+            background_handle: None,
             timer: 0,
             end_tick: 0,
             transition_running: false
@@ -715,8 +717,18 @@ impl World {
         self.transition_running = true;
         if let Some(music_handle) = &self.music_handle {
             music_handle.stop();
+            self.music_handle = None;
         }
+        if let Some(background_handle) = &self.background_handle {
+            background_handle.stop();
+            self.background_handle = None;
+        }
+
+
         self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage.saturating_sub(1)], 0.5));
+        if let Some(background) = &assets.background_act[self.stage.saturating_sub(1)] {
+            self.background_handle = Some(audio::play_loop(background, 1.))
+        } 
     }
 
     pub fn tick(&mut self, assets: &mut Assets) {
