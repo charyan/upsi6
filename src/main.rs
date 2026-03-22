@@ -7,6 +7,7 @@ use marmalade::audio;
 use marmalade::console;
 use marmalade::input::Key;
 use marmalade::render::canvas2d::TextureRect;
+use marmalade::render::color::WHITE;
 
 use crate::assets::Assets;
 use crate::world::World;
@@ -50,8 +51,10 @@ pub const VIEW_SIZE: [Vec2; 5] = [
 ];
 
 pub enum WorldState {
+    START,
     EMAIL,
     PLAY,
+    POPUP,
     MOVING,
     END,
     FINAL,
@@ -64,8 +67,13 @@ fn draw_shredder(
     assets: &Assets,
     text: &TextureRect,
     pos: Vec2,
+    tick: Option<u32>,
 ) {
-    canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
+    if let Some(tick) = tick {
+        canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16. + 0.25 * tick as f32, ASPECT_RATIO);
+    } else {
+        canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
+    }
 
     canvas.draw_rect(pos, SHREDDER_SIZE, color::WHITE, text);
 
@@ -134,7 +142,7 @@ fn draw_shredder(
 fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
     canvas.camera_view_ratio(world.cam_pos, world.view_radius, ASPECT_RATIO);
 
-    let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
+    let mouse_pos: Vec2 = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
 
     canvas.draw_rect(VIEW_POS[4], VIEW_SIZE[4], color::WHITE, &assets.l4);
 
@@ -161,6 +169,41 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
     let mouse_clicked = input::is_button_pressed(Button::Left);
 
     match world.state {
+        WorldState::START => {
+            canvas.camera_view_ratio(Vec2::ZERO, 16., ASPECT_RATIO);
+
+            canvas.draw_rect(
+                Vec2::new(-16., -9.),
+                Vec2::new(32., 18.),
+                color::WHITE,
+                &assets.l4,
+            );
+
+            canvas.draw_rect(
+                Vec2::new(-12., -6.),
+                Vec2::new(24., 16.),
+                color::WHITE,
+                &assets.title,
+            );
+
+            canvas.draw_rect(
+                Vec2::new(-4., -7.),
+                Vec2::new(8., 6.),
+                color::WHITE,
+                &assets.gui_button_play,
+            );
+
+            if mouse_clicked
+                && mouse_pos.x < 4.
+                && mouse_pos.x > -4.
+                && mouse_pos.y < -1.
+                && mouse_pos.y > -7.
+            {
+                world.music_handle = Some(audio::play_loop(&mut assets.music_act[0], 1.));
+                world.state = WorldState::EMAIL;
+            }
+        }
+
         WorldState::EMAIL => {
             canvas.draw_rect(
                 Vec2::new(-8., -9.),
@@ -182,7 +225,6 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 && mouse_pos.y < -4.5
                 && mouse_pos.y > -8.5
             {
-                world.music_handle = Some(audio::play_loop(&mut assets.music_act[0], 1.));
                 world.state = WorldState::PLAY;
             }
         }
@@ -338,7 +380,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 );
             }
 
-            draw_shredder(world, canvas, assets, panel_text, SHREDDER_POS);
+            draw_shredder(world, canvas, assets, panel_text, SHREDDER_POS, None);
 
             canvas.draw_rect(
                 Vec2::new(12., 6.),
@@ -360,6 +402,46 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 &canvas.white_texture(),
             );
         }
+        WorldState::POPUP => {
+            canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
+            let mouse_pos: Vec2 = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
+
+            world.scraper.energy = 5;
+            world.scraper.sharpening = 5;
+            world.scraper.lubrication = 5;
+            world.scraper.waiting_key = None;
+
+            draw_shredder(
+                world,
+                canvas,
+                assets,
+                &assets.shredder_panel_ok,
+                SHREDDER_POS + Vec2::new(0.1, 0.05) * world.end_tick as f32,
+                None,
+            );
+
+            canvas.draw_rect(
+                Vec2::new(-4., -4.5),
+                Vec2::new(8., 9.),
+                color::WHITE,
+                &assets.gui_end_note,
+            );
+            canvas.draw_rect(
+                Vec2::new(-3., -4.),
+                Vec2::new(6., 4.),
+                color::WHITE,
+                &assets.gui_button_ok,
+            );
+
+            if mouse_clicked
+                && mouse_pos.x < 3.
+                && mouse_pos.x > -3.
+                && mouse_pos.y < 0.
+                && mouse_pos.y > -4.
+            {
+                world.state = WorldState::MOVING;
+            }
+        }
 
         WorldState::MOVING => {
             canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
@@ -369,6 +451,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 assets,
                 &assets.shredder_panel_ok,
                 SHREDDER_POS + Vec2::new(0.1, 0.05) * world.end_tick as f32,
+                None,
             );
 
             if world.end_tick > 120 {
@@ -381,51 +464,67 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
 
             let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
             let pos = SHREDDER_POS + Vec2::new(12., 6.);
+
             let dist = mouse_pos.distance(Vec2::new(
                 pos.x + SHREDDER_SIZE.x / 2.,
                 pos.y + SHREDDER_SIZE.y,
             ));
 
-            console::log(&format!("{dist}"));
-
             if dist < 1. {
                 world.scraper.last_shred();
+                world.running = false;
                 world.state = WorldState::END;
             }
-            draw_shredder(world, canvas, assets, &assets.shredder_panel_ok, pos);
+            draw_shredder(world, canvas, assets, &assets.shredder_panel_ok, pos, None);
         }
 
         WorldState::END => {
             canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
             let pos = SHREDDER_POS + Vec2::new(12., 6.);
-            draw_shredder(world, canvas, assets, &assets.shredder_panel_ok, pos);
+
+            canvas.draw_rect(
+                Vec2::new(-1.5, 2. - world.final_tick as f32 * 0.01),
+                Vec2::new(1., 1.),
+                color::WHITE,
+                &assets.hand_open,
+            );
+
+            draw_shredder(world, canvas, assets, &assets.shredder_panel_ok, pos, None);
+
             if !world.scraper.shredding_hand {
                 world.state = WorldState::BYE;
             }
         }
 
         WorldState::BYE => {
-            canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
-
-            canvas.draw_text(
-                Vec2::new(-6., 0.),
-                2.,
-                &format!("Thank you for playing !"),
-                &mut assets.font,
-                color::WHITE,
-                &canvas.white_texture(),
+            draw_shredder(
+                world,
+                canvas,
+                assets,
+                &assets.shredder_panel_ok,
+                Vec2::new(-3., -3.),
+                Some(world.bye_tick),
             );
+
+            canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
             let timer = world.timer / 20; // Scale to reasonable speed
 
             let timer_minutes = timer % 60;
             let timer_hours = timer / 60 + 8;
 
+            canvas.draw_rect(
+                Vec2::new(-11., -8.),
+                Vec2::new(24., 12.),
+                color::WHITE,
+                &assets.gui_end_final,
+            );
+
             canvas.draw_text(
-                Vec2::new(-2., -2.5),
-                2.,
-                &format!("Time : {timer_hours:2}h{timer_minutes}"),
+                Vec2::new(4.25, -1.125),
+                1.,
+                &format!("{timer_hours:2}h{timer_minutes}"),
                 &mut assets.font,
                 color::WHITE,
                 &canvas.white_texture(),
@@ -474,7 +573,7 @@ async fn async_main() {
                 if world.get_stage() != 4 {
                     world.next_stage(&assets);
                 } else {
-                    world.state = WorldState::MOVING;
+                    world.state = WorldState::POPUP;
                 }
             }
 
@@ -519,19 +618,15 @@ async fn async_main() {
                 &canvas.white_texture(),
             );
 
-            canvas.draw_rect(
-                canvas.screen_to_world_pos(input::mouse_position().as_vec2()) - Vec2::new(0.5, 0.5),
-                Vec2::new(1., 1.),
-                color::WHITE,
-                mouse_texture,
-            );
-
-            canvas.draw_rect(
-                canvas.screen_to_world_pos(input::mouse_position().as_vec2()) - Vec2::new(0.5, 0.5),
-                Vec2::new(1., 1.),
-                color::WHITE,
-                mouse_texture,
-            );
+            if world.running {
+                canvas.draw_rect(
+                    canvas.screen_to_world_pos(input::mouse_position().as_vec2())
+                        - Vec2::new(0.5, 0.5),
+                    Vec2::new(1., 1.),
+                    color::WHITE,
+                    mouse_texture,
+                );
+            }
 
             input::reset_pressed();
             canvas.flush();

@@ -63,6 +63,11 @@ pub struct Assets {
     pub gui_key_down: TextureRect,
     pub gui_gauge: TextureRect,
     pub gui_window: TextureRect,
+    pub gui_button_ok: TextureRect,
+    pub gui_end_note: TextureRect,
+    pub gui_end_final: TextureRect,
+    pub title: TextureRect,
+    pub gui_button_play: TextureRect,
 
     pub energy: TextureRect,
     pub gears: TextureRect,
@@ -80,7 +85,7 @@ pub struct Assets {
     pub hand_open: TextureRect,
     pub hand_close: TextureRect,
 
-    pub background_act: [Option<Audio>; 4]
+    pub background_act: [Option<Audio>; 4],
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -182,6 +187,14 @@ impl Assets {
             gui_key_up: load_texture(canvas, include_bytes!("../assets/gui_key_up.png")).await,
             gui_gauge: load_texture(canvas, include_bytes!("../assets/gui_gauge.png")).await,
             gui_window: load_texture(canvas, include_bytes!("../assets/gui_window.png")).await,
+            gui_button_ok: load_texture(canvas, include_bytes!("../assets/gui_button_ok.png"))
+                .await,
+            gui_end_note: load_texture(canvas, include_bytes!("../assets/gui_end_note.png")).await,
+            gui_end_final: load_texture(canvas, include_bytes!("../assets/gui_end_final.png"))
+                .await,
+            title: load_texture(canvas, include_bytes!("../assets/title.png")).await,
+            gui_button_play: load_texture(canvas, include_bytes!("../assets/gui_button_play.png"))
+                .await,
 
             energy: load_texture(canvas, include_bytes!("../assets/energy.png")).await,
             gears: load_texture(canvas, include_bytes!("../assets/gears.png")).await,
@@ -218,12 +231,17 @@ impl Assets {
             hand_close: load_texture(canvas, include_bytes!("../assets/gui_hand_closed.png")).await,
             hand_open: load_texture(canvas, include_bytes!("../assets/gui_hand_open.png")).await,
 
-            background_act : [
-                Some(audio::from_bytes(include_bytes!("../ressources/audio/ambiance/Ambiance-Fond-Level1.mp3")).await),
+            background_act: [
+                Some(
+                    audio::from_bytes(include_bytes!(
+                        "../ressources/audio/ambiance/Ambiance-Fond-Level1.mp3"
+                    ))
+                    .await,
+                ),
                 None,
                 None,
-                None
-            ]
+                None,
+            ],
         }
     }
 }

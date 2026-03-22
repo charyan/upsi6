@@ -209,7 +209,14 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
     let l1_data = [
         (6., Vec2::new(2.3, -2.), -1, 2, -1, assets.l1_chair.clone()),
         (6., Vec2::new(9.7, 6.), -1, 2, -1, assets.l1_chair.clone()),
-        (3., Vec2::new(-4.3, -6.4), -1, 2, -1, assets.l1_trash.clone()),
+        (
+            3.,
+            Vec2::new(-4.3, -6.4),
+            -1,
+            2,
+            -1,
+            assets.l1_trash.clone(),
+        ),
         (3., Vec2::new(5.8, 1.24), -1, 2, -1, assets.l1_trash.clone()),
         (9., Vec2::new(-3.5, 1.5), 2, -1, -1, assets.l1_desk.clone()),
         (9., Vec2::new(5.7, 8.5), 2, -1, -1, assets.l1_desk.clone()),
@@ -638,7 +645,10 @@ pub struct World {
     pub background_handle: Option<SoundHandle>,
     pub timer: u64,
     pub end_tick: u64,
-    pub transition_running: bool
+    pub transition_running: bool,
+    pub running: bool,
+    pub final_tick: u32,
+    pub bye_tick: u32,
 }
 
 impl World {
@@ -654,12 +664,15 @@ impl World {
             cam_pos: Vec2::ZERO,
             resources,
             scraper,
-            state: WorldState::EMAIL,
+            state: WorldState::START,
             music_handle: None,
             background_handle: None,
             timer: 0,
             end_tick: 0,
-            transition_running: false
+            transition_running: false,
+            running: true,
+            final_tick: 1,
+            bye_tick: 1,
         }
     }
 
@@ -724,11 +737,13 @@ impl World {
             self.background_handle = None;
         }
 
-
-        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage.saturating_sub(1)], 0.5));
+        self.music_handle = Some(audio::play_loop(
+            &assets.music_act[self.stage.saturating_sub(1)],
+            0.5,
+        ));
         if let Some(background) = &assets.background_act[self.stage.saturating_sub(1)] {
             self.background_handle = Some(audio::play_loop(background, 1.))
-        } 
+        }
     }
 
     pub fn tick(&mut self, assets: &mut Assets) {
@@ -739,6 +754,14 @@ impl World {
         }
         if let WorldState::MOVING = self.state {
             self.end_tick += 1
+        }
+
+        if let WorldState::END = self.state {
+            self.final_tick += 1
+        }
+
+        if let WorldState::BYE = self.state {
+            self.bye_tick += 1
         }
     }
 }
