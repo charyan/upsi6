@@ -248,7 +248,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
         ),
         (
             15.,
-            Vec2::new(-122.8, -52.4),
+            Vec2::new(-106.176, -61.72),
             0,
             -1,
             1,
