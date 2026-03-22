@@ -494,6 +494,8 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             draw_shredder(world, canvas, assets, &assets.shredder_panel_ok, pos, None);
 
             if !world.scraper.shredding_hand {
+                audio::play(&assets.music_act[4], 0.4);
+
                 world.state = WorldState::BYE;
             }
         }
