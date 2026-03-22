@@ -82,6 +82,10 @@ pub struct Assets {
     pub shreder_break: Audio,
     pub pickup_sound: Audio,
 
+    pub destruction_1: Audio,
+    pub destruction_2: Audio,
+    pub destruction_3: Audio,
+
     pub hand_open: TextureRect,
     pub hand_close: TextureRect,
 
@@ -226,6 +230,19 @@ impl Assets {
 
             pickup_sound: audio::from_bytes(include_bytes!(
                 "../ressources/audio/effects/grab/Pickup small metal 1.mp3"
+            ))
+            .await,
+
+            destruction_1: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/shred/Destruction small metal 3.mp3"
+            ))
+            .await,
+            destruction_2: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/shred/Destruction small plastic 2.mp3"
+            ))
+            .await,
+            destruction_3: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/shred/Destruction_heavy_metal_1.mp3"
             ))
             .await,
 

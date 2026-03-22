@@ -473,6 +473,10 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             if dist < 1. {
                 world.scraper.last_shred();
                 audio::play(&assets.shreder_sound, 0.4);
+                audio::play(&assets.destruction_1, 0.4);
+                audio::play(&assets.destruction_2, 0.4);
+                audio::play(&assets.destruction_3, 0.4);
+
                 world.running = false;
                 world.state = WorldState::END;
             }
