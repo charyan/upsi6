@@ -525,7 +525,7 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
             assets.l4_sun.clone(),
         ),
         (
-            1000.,
+            3000.,
             Vec2::new(-5955.55, -264.4925),
             1,
             -1,

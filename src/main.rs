@@ -231,9 +231,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 if selected.borrow().movable {
                     let mut s = selected.borrow_mut();
 
-                    let dist = mouse_pos - s.pos;
-
-                    s.pos += dist * 0.1;
+                    s.pos = mouse_pos;
 
                     let view_pos = VIEW_POS[world.get_stage()];
                     let view_size = VIEW_SIZE[world.get_stage()];
@@ -264,7 +262,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                         if interface_pos.distance(Vec2::new(
                             SHREDDER_POS.x + SHREDDER_SIZE.x / 2.,
                             SHREDDER_POS.y + SHREDDER_SIZE.y,
-                        )) < 2.
+                        )) < 4.
                         {
                             let screen_pos = canvas.world_to_screen_pos(
                                 SHREDDER_POS + Vec2::new(SHREDDER_SIZE.x / 2., SHREDDER_SIZE.y),
