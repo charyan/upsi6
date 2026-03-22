@@ -71,7 +71,7 @@ pub struct Assets {
 
     pub earth_resource: TextureRect,
 
-    pub music_act: [Audio; 4],
+    pub music_act: [Audio; 5],
     pub shreder_sound: Audio,
     pub shreder_break: Audio,
     pub pickup_sound: Audio,
@@ -189,6 +189,7 @@ impl Assets {
 
             music_act: [
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act1.mp3")).await,
+                audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act1.mp3")).await,
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act2.mp3")).await,
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act3.mp3")).await,
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act4.mp3")).await,
@@ -200,14 +201,16 @@ impl Assets {
 
             shreder_break: audio::from_bytes(include_bytes!(
                 "../ressources/audio/effects/explosion.mp3"
-            )).await,
-            
+            ))
+            .await,
+
             pickup_sound: audio::from_bytes(include_bytes!(
                 "../ressources/audio/effects/grab/Pickup small metal 1.mp3"
-            )).await,
+            ))
+            .await,
 
             hand_close: load_texture(canvas, include_bytes!("../assets/gui_hand_closed.png")).await,
-            hand_open: load_texture(canvas, include_bytes!("../assets/gui_hand_open.png")).await
+            hand_open: load_texture(canvas, include_bytes!("../assets/gui_hand_open.png")).await,
         }
     }
 }
