@@ -119,7 +119,7 @@ impl Scraper {
             }
 
             if input::is_key_pressed(key.1) {
-                self.current_press += 1;
+                self.current_press += 2;
             }
 
             if self.current_press > TARGET_PRESS {
@@ -321,9 +321,9 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
         (
             6.,
             Vec2::new(4.7, -66.78),
-            0,
+            -1,
             3,
-            0,
+            -1,
             assets.l2_letterbox.clone(),
         ),
         (
