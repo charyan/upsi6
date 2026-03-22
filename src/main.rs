@@ -201,11 +201,11 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                             1.0
                         } else {
                             let color_circle: Vec4 = if r.energy > 0 {
-                                color::rgba(1., 1., 0., 0.5)
+                                color::rgba(0.988, 0.941, 0.56, 0.5)
                             } else if r.lubrication > 0 {
-                                color::rgba(1., 0., 0., 0.4)
+                                color::rgba(0.808, 0.247, 0.368, 0.4)
                             } else if r.sharpening > 0 {
-                                color::rgba(0., 0., 1., 0.4)
+                                color::rgba(0.431, 0.505, 0.980, 0.4)
                             } else {
                                 color::rgba(0., 0., 0., 0.1)
                             };
@@ -326,7 +326,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                         0.5,
                         world.scraper.current_press as f32 / TARGET_PRESS as f32 * 4.,
                     ),
-                    color::rgb(0., 1., 0.),
+                    color::rgb(0.415, 0.792, 0.427),
                     &canvas.white_texture(),
                 );
 
@@ -434,112 +434,6 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
     }
 
     world.resources[world.get_stage()].retain(|x| x.borrow().alive);
-
-    canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
-
-    let mut panel_text: &TextureRect = &assets.shredder_panel_ok;
-
-    if let Some(key) = world.scraper.waiting_key {
-        let pos = Vec2::new(SHREDDER_POS.x - 0.5, SHREDDER_POS.y + SHREDDER_SIZE.y + 3.0);
-        let text = if world.scraper.key_down {
-            panel_text = &assets.shredder_panel_nok_1;
-            &assets.gui_key_down
-        } else {
-            panel_text = &assets.shredder_panel_nok_2;
-            &assets.gui_key_up
-        };
-
-        canvas.draw_rect(pos, Vec2::new(4., 4.), color::WHITE, &text);
-
-        canvas.draw_text(
-            pos + 1.75,
-            1.,
-            key.0,
-            &mut assets.font,
-            color::rgb(0., 0., 0.),
-            &canvas.white_texture(),
-        );
-
-        canvas.draw_rect(
-            Vec2::new(pos.x + 3.75, pos.y),
-            Vec2::new(
-                0.5,
-                world.scraper.current_press as f32 / TARGET_PRESS as f32 * 4.,
-            ),
-            color::rgb(0., 1., 0.),
-            &canvas.white_texture(),
-        );
-
-        canvas.draw_rect(
-            Vec2::new(pos.x + 3.5, pos.y),
-            Vec2::new(1., 4.),
-            color::rgb(0., 0., 0.),
-            &assets.gui_gauge,
-        );
-    }
-
-    canvas.draw_rect(SHREDDER_POS, SHREDDER_SIZE, color::WHITE, &panel_text);
-
-    let wheel_pos_1 = Vec2::new(
-        SHREDDER_POS.x - WHEEL_SIZE.x / 2. + 0.5,
-        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 2.,
-    );
-
-    let wheel_pos_2 = Vec2::new(
-        SHREDDER_POS.x + WHEEL_SIZE.x / 2. + 0.5,
-        SHREDDER_POS.y + WHEEL_SIZE.y / 2. + 2.,
-    );
-
-    let wheel_pos_3 = Vec2::new(
-        SHREDDER_POS.x + SHREDDER_SIZE.x / 2. - WHEEL_SIZE.x / 2.,
-        SHREDDER_POS.y + SHREDDER_SIZE.y / 2. - WHEEL_SIZE.y / 2. + 1.5,
-    );
-
-    draw_wheel(
-        canvas,
-        wheel_pos_1,
-        ((world.scraper.current_shredding_tick % 5) as f32) * 72.,
-        assets,
-    );
-    draw_wheel(
-        canvas,
-        wheel_pos_2,
-        -((world.scraper.current_shredding_tick % 5) as f32) * 72.,
-        assets,
-    );
-    draw_wheel(
-        canvas,
-        wheel_pos_3,
-        -((world.scraper.current_shredding_tick % 5) as f32) * 72.,
-        assets,
-    );
-
-    if world.scraper.lubrication <= VALUE_MIN {
-        canvas.draw_rect(
-            Vec2::new(SHREDDER_POS.x + 0.5, SHREDDER_POS.y + 0.25),
-            Vec2::new(1., 1.),
-            color::WHITE,
-            &assets.oil,
-        );
-    }
-
-    if world.scraper.energy <= VALUE_MIN {
-        canvas.draw_rect(
-            Vec2::new(SHREDDER_POS.x + 1.5, SHREDDER_POS.y + 0.25),
-            Vec2::new(1., 1.),
-            color::WHITE,
-            &assets.energy,
-        );
-    }
-
-    if world.scraper.sharpening <= VALUE_MIN {
-        canvas.draw_rect(
-            Vec2::new(SHREDDER_POS.x + 2.5, SHREDDER_POS.y + 0.25),
-            Vec2::new(1., 1.),
-            color::WHITE,
-            &assets.gears,
-        );
-    }
 }
 
 fn draw_wheel(canvas: &mut Canvas2d, wheel_pos: Vec2, angle: f32, assets: &Assets) {
@@ -592,21 +486,53 @@ async fn async_main() {
 
             draw_game(&mut canvas, &mut world, &mut assets);
 
-            canvas.camera_view_ratio(Vec2::ZERO, 16., 16./9.);
-            
+            canvas.camera_view_ratio(Vec2::ZERO, 16., 16. / 9.);
+
             let mouse_texture = if input::is_button_down(Button::Left) {
                 &assets.hand_close
-            } else  {
+            } else {
                 &assets.hand_open
             };
-            
-            canvas.draw_rect(Vec2::new(-16., -9.-36.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
-            canvas.draw_rect(Vec2::new(-16., 9.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
-            canvas.draw_rect(Vec2::new(-16.-64., -9.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
-            canvas.draw_rect(Vec2::new(16., -9.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
-            
-            canvas.draw_rect(canvas.screen_to_world_pos(input::mouse_position().as_vec2())-Vec2::new(0.5, 0.5), Vec2::new(1., 1.), color::WHITE, mouse_texture);
-            
+
+            canvas.draw_rect(
+                Vec2::new(-16., -9. - 36.),
+                Vec2::new(64., 36.),
+                color::rgb(0., 0., 0.),
+                &canvas.white_texture(),
+            );
+            canvas.draw_rect(
+                Vec2::new(-16., 9.),
+                Vec2::new(64., 36.),
+                color::rgb(0., 0., 0.),
+                &canvas.white_texture(),
+            );
+            canvas.draw_rect(
+                Vec2::new(-16. - 64., -9.),
+                Vec2::new(64., 36.),
+                color::rgb(0., 0., 0.),
+                &canvas.white_texture(),
+            );
+            canvas.draw_rect(
+                Vec2::new(16., -9.),
+                Vec2::new(64., 36.),
+                color::rgb(0., 0., 0.),
+                &canvas.white_texture(),
+            );
+
+            canvas.draw_rect(
+                canvas.screen_to_world_pos(input::mouse_position().as_vec2()) - Vec2::new(0.5, 0.5),
+                Vec2::new(1., 1.),
+                color::WHITE,
+                mouse_texture,
+            );
+
+            canvas.draw_rect(
+                canvas.screen_to_world_pos(input::mouse_position().as_vec2()) - Vec2::new(0.5, 0.5),
+                Vec2::new(1., 1.),
+                color::WHITE,
+                mouse_texture,
+            );
+
             input::reset_pressed();
             canvas.flush();
         }
