@@ -316,7 +316,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             draw_shredder(world, canvas, assets, panel_text, SHREDDER_POS);
 
             canvas.draw_rect(
-                Vec2::new(12., 5.),
+                Vec2::new(12., 6.),
                 Vec2::new(4., 4.),
                 color::WHITE,
                 &assets.gui_time,
@@ -327,8 +327,8 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             let timer_minutes = timer % 60;
             let timer_hours = timer / 60 + 8; // start work at height
             canvas.draw_text(
-                Vec2::new(14.2, 7.5),
-                0.6,
+                Vec2::new(14.0, 8.15),
+                0.7,
                 &format!("{timer_hours:2}h{timer_minutes}"),
                 &mut assets.font,
                 color::rgb(0., 0., 0.),
@@ -515,26 +515,6 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             &assets.gears,
         );
     }
-
-    canvas.draw_rect(
-        Vec2::new(12., 6.),
-        Vec2::new(4., 4.),
-        color::WHITE,
-        &assets.gui_time,
-    );
-
-    let timer = world.timer / 20; // Scale to reasonable speed
-
-    let timer_minutes = timer % 60;
-    let timer_hours = timer / 60 + 8; // start work at height
-    canvas.draw_text(
-        Vec2::new(14.1, 8.15),
-        0.6,
-        &format!("{timer_hours:02}h{timer_minutes:02}"),
-        &mut assets.font,
-        color::rgb(0., 0., 0.),
-        &canvas.white_texture(),
-    );
 }
 
 fn draw_wheel(canvas: &mut Canvas2d, wheel_pos: Vec2, angle: f32, assets: &Assets) {
