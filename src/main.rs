@@ -277,10 +277,15 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                             let world_pos = canvas.screen_to_world_pos(screen_pos);
 
                             s.pos = world_pos;
+
+                            if s.texture.webgl_texture == assets.l3_cow.webgl_texture {
+                                audio::play(&assets.shreded_cow_sound, 1.);
+                            } else {
+                                audio::play(&assets.shreder_sound, 0.2);
+                            }
+
                             drop(s);
                             world.scraper.shred(selected.clone());
-
-                            Some(audio::play(&assets.shreder_sound, 0.2));
                         }
                     }
                 } else {

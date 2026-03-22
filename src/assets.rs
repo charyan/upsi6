@@ -73,6 +73,7 @@ pub struct Assets {
 
     pub music_act: [Audio; 4],
     pub shreder_sound: Audio,
+    pub shreded_cow_sound: Audio,
     pub shreder_break: Audio,
     pub pickup_sound: Audio,
 
@@ -197,6 +198,10 @@ impl Assets {
             ],
             shreder_sound: audio::from_bytes(include_bytes!(
                 "../ressources/audio/effects/active_shreder_sound.mp3"
+            ))
+            .await,
+            shreded_cow_sound: audio::from_bytes(include_bytes!(
+                "../ressources/audio/effects/grab/Enorme vache.mp3"
             ))
             .await,
 
