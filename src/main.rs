@@ -231,9 +231,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 if selected.borrow().movable {
                     let mut s = selected.borrow_mut();
 
-                    let dist = mouse_pos - s.pos;
-
-                    s.pos += dist * 0.1;
+                    s.pos = mouse_pos;
 
                     let view_pos = VIEW_POS[world.get_stage()];
                     let view_size = VIEW_SIZE[world.get_stage()];
