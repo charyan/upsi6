@@ -196,24 +196,28 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                             audio::play(&mut assets.pickup_sound, 1.);
                         }
 
-                        let color_circle: Vec4 = if r.energy > 0 {
-                            color::rgba(1., 1., 0., 0.5)
-                        } else if r.lubrication > 0 {
-                            color::rgba(1., 0., 0., 0.4)
-                        } else if r.sharpening > 0 {
-                            color::rgba(0., 0., 1., 0.4)
+                        if world.transition_running {
+                            1.0
                         } else {
-                            color::rgba(0., 0., 0., 0.1)
-                        };
+                            let color_circle: Vec4 = if r.energy > 0 {
+                                color::rgba(1., 1., 0., 0.5)
+                            } else if r.lubrication > 0 {
+                                color::rgba(1., 0., 0., 0.4)
+                            } else if r.sharpening > 0 {
+                                color::rgba(0., 0., 1., 0.4)
+                            } else {
+                                color::rgba(0., 0., 0., 0.1)
+                            };
 
-                        canvas.draw_regular(
-                            r.pos,
-                            r.radius / 2.,
-                            64,
-                            color_circle,
-                            &canvas.white_texture(),
-                        );
-                        1.1
+                            canvas.draw_regular(
+                                r.pos,
+                                r.radius / 2.,
+                                64,
+                                color_circle,
+                                &canvas.white_texture(),
+                            );
+                            1.1
+                        }
                     } else {
                         1.0
                     };
@@ -329,7 +333,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             canvas.draw_text(
                 Vec2::new(14.0, 8.15),
                 0.7,
-                &format!("{timer_hours:2}h{timer_minutes}"),
+                &format!("{timer_hours:02}h{timer_minutes:02}"),
                 &mut assets.font,
                 color::rgb(0., 0., 0.),
                 &canvas.white_texture(),
@@ -574,6 +578,11 @@ async fn async_main() {
             } else  {
                 &assets.hand_open
             };
+            
+            canvas.draw_rect(Vec2::new(-16., -9.-36.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
+            canvas.draw_rect(Vec2::new(-16., 9.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
+            canvas.draw_rect(Vec2::new(-16.-64., -9.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
+            canvas.draw_rect(Vec2::new(16., -9.), Vec2::new(64., 36.), color::rgb(0., 0.,0.), &canvas.white_texture());
             
             canvas.draw_rect(canvas.screen_to_world_pos(input::mouse_position().as_vec2())-Vec2::new(0.5, 0.5), Vec2::new(1., 1.), color::WHITE, mouse_texture);
             

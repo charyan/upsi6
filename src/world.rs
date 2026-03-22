@@ -653,6 +653,7 @@ pub struct World {
     pub music_handle: Option<SoundHandle>,
     pub timer: u64,
     pub end_tick: u64,
+    pub transition_running: bool
 }
 
 impl World {
@@ -672,6 +673,7 @@ impl World {
             music_handle: None,
             timer: 0,
             end_tick: 0,
+            transition_running: false
         }
     }
 
@@ -688,6 +690,8 @@ impl World {
 
         if self.view_radius * 1.01 < target_radius {
             self.view_radius *= 1.01;
+        } else {
+            self.transition_running = false;
         }
 
         let (target_pos, previous_pos) = match self.stage {
@@ -724,6 +728,7 @@ impl World {
 
     pub fn next_stage(&mut self, assets: &Assets) {
         self.stage += 1;
+        self.transition_running = true;
         if let Some(music_handle) = &self.music_handle {
             music_handle.stop();
         }
