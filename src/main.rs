@@ -234,6 +234,23 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
 
                     s.pos += dist * 0.1;
 
+                    let view_pos = VIEW_POS[world.get_stage()];
+                    let view_size = VIEW_SIZE[world.get_stage()];
+
+                    if s.pos.x < view_pos.x {
+                        s.pos.x = view_pos.x;
+                    }
+                    if s.pos.x > view_pos.x + view_size.x {
+                        s.pos.x = view_pos.x + view_size.x;
+                    }
+
+                    if s.pos.y < view_pos.y {
+                        s.pos.y = view_pos.y;
+                    }
+                    if s.pos.y > view_pos.y + view_size.y {
+                        s.pos.y = view_pos.y + view_size.y;
+                    }
+
                     let screen_pos = canvas.world_to_screen_pos(s.pos);
 
                     canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
