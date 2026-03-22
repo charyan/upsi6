@@ -727,7 +727,7 @@ impl World {
         if let Some(music_handle) = &self.music_handle {
             music_handle.stop();
         }
-        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage], 0.5));
+        self.music_handle = Some(audio::play_loop(&assets.music_act[self.stage.saturating_sub(1)], 0.5));
     }
 
     pub fn tick(&mut self, assets: &mut Assets) {
