@@ -193,7 +193,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                     * if r.movable && r.pos.distance(mouse_pos) < (r.radius / 2.) {
                         if mouse_clicked {
                             world.selected = Some(resource.clone());
-                            audio::play(&mut assets.pickup_sound, 1.);
+                            audio::play(&mut assets.pickup_sound, 0.5);
                         }
 
                         if world.transition_running {
@@ -264,7 +264,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                             drop(s);
                             world.scraper.shred(selected.clone());
 
-                            Some(audio::play(&assets.shreder_sound, 1.0));
+                            Some(audio::play(&assets.shreder_sound, 0.2));
                         }
                     }
                 } else {
