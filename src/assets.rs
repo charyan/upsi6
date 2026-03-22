@@ -78,6 +78,8 @@ pub struct Assets {
 
     pub hand_open: TextureRect,
     pub hand_close: TextureRect,
+
+    pub background_act: [Option<Audio>; 4]
 }
 
 async fn load_texture(canvas: &mut Canvas2d, bytes: &[u8]) -> TextureRect {
@@ -210,6 +212,13 @@ impl Assets {
 
             hand_close: load_texture(canvas, include_bytes!("../assets/gui_hand_closed.png")).await,
             hand_open: load_texture(canvas, include_bytes!("../assets/gui_hand_open.png")).await,
+
+            background_act : [
+                Some(audio::from_bytes(include_bytes!("../ressources/audio/ambiance/Ambiance-Fond-Level1.mp3")).await),
+                None,
+                None,
+                None
+            ]
         }
     }
 }
