@@ -233,7 +233,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 let r = resource.borrow();
 
                 let radius = r.radius
-                    * if r.movable && r.pos.distance(mouse_pos) < (r.radius / 2.) {
+                    * if r.movable && r.pos.distance(mouse_pos) < (r.radius / 2.) && world.scraper.waiting_key.is_none() {
                         if mouse_clicked {
                             world.selected = Some(resource.clone());
                             audio::play(&mut assets.pickup_sound, 0.5);
@@ -270,7 +270,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             }
 
             if let Some(selected) = &world.selected {
-                if selected.borrow().movable {
+                if selected.borrow().movable && world.scraper.waiting_key.is_none() {
                     let mut s = selected.borrow_mut();
 
                     s.pos = mouse_pos;
