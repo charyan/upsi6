@@ -559,8 +559,6 @@ async fn async_main() {
 
     let mut canvas = Canvas2d::new(&main_canvas);
 
-    loading::loading(&mut canvas, |_| async {}).await;
-
     let mut assets = Assets::load(&mut canvas).await;
 
     let mut world = World::new(&assets);
