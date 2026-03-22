@@ -240,14 +240,6 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
     let l2_data = [
         (
             15.,
-            Vec2::new(-151., -35.5),
-            0,
-            -1,
-            1,
-            assets.l2_light.clone(),
-        ),
-        (
-            15.,
             Vec2::new(-106.176, -61.72),
             0,
             -1,
@@ -257,14 +249,6 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
         (
             15.,
             Vec2::new(-70.9, -80.9),
-            0,
-            -1,
-            1,
-            assets.l2_light.clone(),
-        ),
-        (
-            15.,
-            Vec2::new(-146.5, 15.6),
             0,
             -1,
             1,
