@@ -451,7 +451,7 @@ fn draw_wheel(canvas: &mut Canvas2d, wheel_pos: Vec2, angle: f32, assets: &Asset
 }
 
 async fn async_main() {
-    dom_stack::set_title("UPSI 6");
+    dom_stack::set_title("A Quick Saturday Recycling Journey");
 
     let main_canvas = dom_stack::create_full_screen_canvas();
 
