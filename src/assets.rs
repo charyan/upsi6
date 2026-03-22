@@ -71,7 +71,7 @@ pub struct Assets {
 
     pub earth_resource: TextureRect,
 
-    pub music_act: [Audio; 5],
+    pub music_act: [Audio; 4],
     pub shreder_sound: Audio,
     pub shreder_break: Audio,
     pub pickup_sound: Audio,
@@ -188,7 +188,6 @@ impl Assets {
             earth_resource: load_texture(canvas, include_bytes!("../assets/L3_object.png")).await,
 
             music_act: [
-                audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act1.mp3")).await,
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act1.mp3")).await,
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act2.mp3")).await,
                 audio::from_bytes(include_bytes!("../ressources/audio/music/upsi6-act3.mp3")).await,
