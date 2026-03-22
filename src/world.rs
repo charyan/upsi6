@@ -664,7 +664,7 @@ impl World {
             cam_pos: Vec2::ZERO,
             resources,
             scraper,
-            state: WorldState::POPUP,
+            state: WorldState::START,
             music_handle: None,
             background_handle: None,
             timer: 0,
