@@ -138,13 +138,6 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
 
     canvas.draw_rect(VIEW_POS[4], VIEW_SIZE[4], color::WHITE, &assets.l4);
 
-    canvas.draw_rect(
-        Vec2::new(-2800., -2250.),
-        Vec2::new(4000., 4000.),
-        color::WHITE,
-        &assets.earth_resource,
-    );
-
     if world.get_stage() <= 3 {
         canvas.draw_rect(VIEW_POS[3], VIEW_SIZE[3], color::WHITE, &assets.l3);
     }
