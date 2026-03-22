@@ -180,8 +180,8 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             );
 
             canvas.draw_rect(
-                Vec2::new(-12., -6.),
-                Vec2::new(24., 16.),
+                Vec2::new(-12., 0.),
+                Vec2::new(24., 6.),
                 color::WHITE,
                 &assets.title,
             );
@@ -196,7 +196,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             if mouse_clicked
                 && mouse_pos.x < 4.
                 && mouse_pos.x > -4.
-                && mouse_pos.y < -1.
+                && mouse_pos.y < -3.
                 && mouse_pos.y > -7.
             {
                 world.music_handle = Some(audio::play_loop(&mut assets.music_act[0], 1.));
@@ -416,18 +416,18 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 canvas,
                 assets,
                 &assets.shredder_panel_ok,
-                SHREDDER_POS + Vec2::new(0.1, 0.05) * world.end_tick as f32,
+                SHREDDER_POS,
                 None,
             );
 
             canvas.draw_rect(
-                Vec2::new(-4., -4.5),
+                Vec2::new(-4., -1.5),
                 Vec2::new(8., 9.),
                 color::WHITE,
                 &assets.gui_end_note,
             );
             canvas.draw_rect(
-                Vec2::new(-3., -4.),
+                Vec2::new(-3., -1.),
                 Vec2::new(6., 4.),
                 color::WHITE,
                 &assets.gui_button_ok,
@@ -436,8 +436,8 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             if mouse_clicked
                 && mouse_pos.x < 3.
                 && mouse_pos.x > -3.
-                && mouse_pos.y < 0.
-                && mouse_pos.y > -4.
+                && mouse_pos.y < 3.
+                && mouse_pos.y > -1.
             {
                 world.state = WorldState::MOVING;
             }
@@ -450,11 +450,11 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 canvas,
                 assets,
                 &assets.shredder_panel_ok,
-                SHREDDER_POS + Vec2::new(0.1, 0.05) * world.end_tick as f32,
+                SHREDDER_POS + Vec2::new(0.2, 0.) * world.end_tick as f32,
                 None,
             );
 
-            if world.end_tick > 120 {
+            if world.end_tick > 60 {
                 world.state = WorldState::FINAL;
             }
         }
@@ -463,7 +463,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
             let mouse_pos = canvas.screen_to_world_pos(input::mouse_position().as_vec2());
-            let pos = SHREDDER_POS + Vec2::new(12., 6.);
+            let pos = SHREDDER_POS + Vec2::new(12., 0.);
 
             let dist = mouse_pos.distance(Vec2::new(
                 pos.x + SHREDDER_SIZE.x / 2.,
@@ -472,6 +472,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
 
             if dist < 1. {
                 world.scraper.last_shred();
+                audio::play(&assets.shreder_sound, 0.4);
                 world.running = false;
                 world.state = WorldState::END;
             }
@@ -481,10 +482,10 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
         WorldState::END => {
             canvas.camera_view_ratio(Vec2::new(0.0, 0.0), 16., ASPECT_RATIO);
 
-            let pos = SHREDDER_POS + Vec2::new(12., 6.);
+            let pos = SHREDDER_POS + Vec2::new(12., 0.);
 
             canvas.draw_rect(
-                Vec2::new(-1.5, 2. - world.final_tick as f32 * 0.01),
+                Vec2::new(-1.5, -4. - world.final_tick as f32 * 0.01),
                 Vec2::new(1., 1.),
                 color::WHITE,
                 &assets.hand_open,
@@ -503,7 +504,7 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
                 canvas,
                 assets,
                 &assets.shredder_panel_ok,
-                Vec2::new(-3., -3.),
+                Vec2::new(-3., -9.),
                 Some(world.bye_tick),
             );
 
@@ -515,16 +516,16 @@ fn draw_game(canvas: &mut Canvas2d, world: &mut World, assets: &mut Assets) {
             let timer_hours = timer / 60 + 8;
 
             canvas.draw_rect(
-                Vec2::new(-11., -8.),
+                Vec2::new(-11., -6.),
                 Vec2::new(24., 12.),
                 color::WHITE,
                 &assets.gui_end_final,
             );
 
             canvas.draw_text(
-                Vec2::new(4.25, -1.125),
+                Vec2::new(4.75, 0.825),
                 1.,
-                &format!("{timer_hours:2}h{timer_minutes}"),
+                &format!("{timer_hours:02}h{timer_minutes:02}"),
                 &mut assets.font,
                 color::WHITE,
                 &canvas.white_texture(),

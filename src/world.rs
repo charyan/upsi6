@@ -761,7 +761,15 @@ impl World {
         }
 
         if let WorldState::BYE = self.state {
-            self.bye_tick += 1
+            self.bye_tick += 1;
+            if let Some(music_handle) = &self.music_handle {
+                music_handle.stop();
+                self.music_handle = None;
+            }
+            if let Some(background_handle) = &self.background_handle {
+                background_handle.stop();
+                self.background_handle = None;
+            }
         }
     }
 }
