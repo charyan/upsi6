@@ -209,8 +209,8 @@ fn create_resources(assets: &Assets) -> [Vec<Rc<RefCell<Resource>>>; 5] {
     let l1_data = [
         (6., Vec2::new(2.3, -2.), -1, 2, -1, assets.l1_chair.clone()),
         (6., Vec2::new(9.7, 6.), -1, 2, -1, assets.l1_chair.clone()),
-        (3., Vec2::new(-4.3, -6.4), 0, 2, -1, assets.l1_trash.clone()),
-        (3., Vec2::new(5.8, 1.24), 0, 2, -1, assets.l1_trash.clone()),
+        (3., Vec2::new(-4.3, -6.4), -1, 2, -1, assets.l1_trash.clone()),
+        (3., Vec2::new(5.8, 1.24), -1, 2, -1, assets.l1_trash.clone()),
         (9., Vec2::new(-3.5, 1.5), 2, -1, -1, assets.l1_desk.clone()),
         (9., Vec2::new(5.7, 8.5), 2, -1, -1, assets.l1_desk.clone()),
         (
